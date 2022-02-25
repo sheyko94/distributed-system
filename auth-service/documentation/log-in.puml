@@ -1,0 +1,21 @@
+
+@startuml Log In
+
+header Log In
+
+actor "user"
+
+activate "gateway-service" #4db9f7
+"user" -> "gateway-service": Log In
+activate "auth-service" #ff3355
+"gateway-service" -> "auth-service": Log In
+database "auth-service-db"
+"auth-service" -> "auth-service-db": Fetches the user account
+"auth-service-db" --> "auth-service": Return the user account
+"auth-service" --> "gateway-service": 200 HTTP - Authentication token
+deactivate "auth-service" 
+"gateway-service" --> "user": 200 HTTP - Authentication token
+deactivate "gateway-service" 
+
+@enduml
+ 

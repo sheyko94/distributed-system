@@ -1,0 +1,22 @@
+server:
+  port: ${SERVER_PORT}
+
+spring:
+
+  application:
+    profiles:
+      active: 'dev'
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+security:
+  oauth2:
+    access-token-validity-seconds: ${ACCESS_TOKEN_VALIDITY_SECONDS}
+    refresh-token-validity-seconds: ${REFRESH_TOKEN_VALIDITY_SECONDS}
+    client-id: ${TOPTAL_CLIENT_ID}
+    client-secret: ${TOPTAL_CLIENT_SECRET}
+    public-key: ${TOPTAL_PUBLIC_KEY}
+    private-key: ${TOPTAL_PRIVATE_KEY}

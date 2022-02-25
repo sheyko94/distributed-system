@@ -1,0 +1,21 @@
+
+@startuml Architecture Overview
+
+header Architecture Overview
+
+actor "user"
+
+activate "user" #f1fa50
+activate "gateway-service" #4db9f7
+"user" -> "gateway-service": SignUp
+activate "auth-service" #ff3355
+"gateway-service" -> "auth-service": SignUp
+"auth-service" -> "gateway-service": Authentication token
+"gateway-service" -> "user": Authentication token
+
+deactivate "auth-service" 
+deactivate "gateway-service" 
+deactivate "user" 
+
+@enduml
+ 

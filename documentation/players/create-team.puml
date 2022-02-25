@@ -1,0 +1,18 @@
+
+@startuml Create Team
+
+header Create Team
+
+queue "Queue system"
+
+activate "Queue system" #f1fa50
+activate "players-service" #ff3355
+"Queue system" -> "players-service": Listens UserSignedUpEvent
+database "players-service-db"
+"players-service" -> "players-service-db": Creates a team for the registered user
+"players-service" -> "players-service-db": Creates x20 players for the newly created team
+deactivate "players-service" 
+deactivate "Queue system" 
+
+@enduml
+ 

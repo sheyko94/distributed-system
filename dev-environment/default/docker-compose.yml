@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+
+  # Auth Service DB
+  auth-service-db:
+    container_name: auth-service-db
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: auth-service-db
+      POSTGRES_USER: test123
+      POSTGRES_PASSWORD: test123
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  # Auth Service
+  auth-service:
+    image: maven:3.6.3-openjdk-11
+    ports:
+      - 8081:8081
+    container_name: auth-service
+    env_file:
+      - ../config/auth.env
+    volumes:
+      - ${M2_PATH}:/root/.m2
+      - ../../auth-service:/auth-service
+    working_dir: /auth-service
+    command: mvn compile spring-boot:run -DskipTests=true
+
+# Volumes
+volumes:
+  db-data:
