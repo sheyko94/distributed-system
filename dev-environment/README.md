@@ -1,25 +1,26 @@
-# Local Setup scripts/files
+## local-env
 
-Running Principal Web+Backend+MySql:
+This repository is a quick way of having a development environment ready to work on local.
 
-> docker-compose down && docker-compose build --pull && docker-compose up -d
+# Localstack
+
+We are using Localstack to have a local development environment emulating AWS Cloud services. For more information, access https://hub.docker.com/r/localstack/localstack
+
+You need to run aws configure to set the env variables needed to work. You can set any values, SDK when working on local will look for the configuration to have a valid format but it won't try a real authentication.
+
+## SQS
+
+Amazon Simple Queue Service (SQS) is a fully managed message queuing service that enables you to decouple and scale microservices, distributed systems, and serverless applications. We use SQS to have a producer/consumer pattern.
+
+Useful commands when working with SQS *(--endpoint-url only needed if working locally)*:
+
+- `aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name UserSignedUpQueueURL`
 
 
-Pulls:
-
-docker pull 340356991954.dkr.ecr.eu-west-1.amazonaws.com/typ/principal-client:latest-local
+- `aws --endpoint-url http://localhost:4566 sqs list-queues`
 
 
+- `aws --endpoint-url http://localhost:4566 sqs purge-queue --queue-url "http://localhost:4566/000000000000/UserSignedUpQueueURL"`
 
-docker pull 340356991954.dkr.ecr.eu-west-1.amazonaws.com/typ/principals-mng:latest
 
-Independent Runs:
-
-* Backend with env file:
-> docker run --name principals-mng-local --env-file principal-mng.env -d -p 5001:80 340356991954.dkr.ecr.eu-west-1.amazonaws.com/typ/principals-mng
-
-* Fronend pre-build to run DEV-SERVER:
-> docker run --name principal-client-local --env-file principal-client.env -d -p 1338:80 340356991954.dkr.ecr.eu-west-1.amazonaws.com/typ/principal-client
-
-* Fronend pre-build to run LOCALLY:
-> docker run --name principal-client-local -d -p 1338:80 340356991954.dkr.ecr.eu-west-1.amazonaws.com/typ/principal-client:latest-local
+- `aws --endpoint-url http://localhost:4566 sqs send-message --queue-url "http://localhost:4566/000000000000/UserSignedUpQueueURL"  --message-body '{"id": "123456"}'`

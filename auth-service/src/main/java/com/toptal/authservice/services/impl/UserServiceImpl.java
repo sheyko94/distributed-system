@@ -1,8 +1,11 @@
 package com.toptal.authservice.services.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.toptal.authservice.config.CustomPasswordEncoder;
 import com.toptal.authservice.domain.models.User;
 import com.toptal.authservice.domain.repositories.UserRepository;
+import com.toptal.authservice.producers.UserSignedUpSQSProducer;
+import com.toptal.authservice.producers.dtos.UserSignedUpSQSProducerDTO;
 import com.toptal.authservice.resources.dtos.SignUpDTO;
 import com.toptal.authservice.services.UserService;
 import com.toptal.authservice.services.validators.UserServiceValidator;
@@ -23,6 +26,7 @@ public class UserServiceImpl implements UserService {
   private final CustomPasswordEncoder customPasswordEncoder;
   private final UserRepository userRepository;
   private final UserServiceValidator userServiceValidator;
+  private final UserSignedUpSQSProducer userSignedUpSQSProducer;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -32,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public User signUp(SignUpDTO signUpDto) throws ValidationException {
+  public User signUp(SignUpDTO signUpDto) throws ValidationException, JsonProcessingException {
 
     userServiceValidator.validateSignUp(signUpDto);
 
@@ -43,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
     user = userRepository.save(user);
 
-    // TODO this should send a domain event
+    userSignedUpSQSProducer.send(UserSignedUpSQSProducerDTO.builder().id(user.getId()).build());
 
     return user;
   }

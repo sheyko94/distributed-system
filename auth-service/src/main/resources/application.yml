@@ -34,6 +34,15 @@ spring:
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
 
+aws:
+  sqs:
+    accessKeyId: 123
+    secretAccessKey: 123
+    host: http://localhost:4566
+    region: eu-west-1
+    queues:
+      user-signed-up-queue-url: http://localhost:4566/000000000000/UserSignedUpQueueURL
+
 security:
   oauth2:
     access-token-validity-seconds: 86400  # 1 day

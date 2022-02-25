@@ -1,5 +1,6 @@
 package com.toptal.authservice.resources.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.toptal.authservice.domain.models.User;
 import com.toptal.authservice.mappers.UserToUserDTOMapper;
 import com.toptal.authservice.resources.dtos.SignUpDTO;
@@ -29,7 +30,7 @@ public class SignUpController {
   private final UserToUserDTOMapper userToUserDTOMapper;
 
   @PostMapping
-  public ResponseEntity<UserDTO> signUp(@RequestBody SignUpDTO signUpDTO) throws ValidationException, UnsupportedEncodingException {
+  public ResponseEntity<UserDTO> signUp(@RequestBody SignUpDTO signUpDTO) throws ValidationException, UnsupportedEncodingException, JsonProcessingException {
     User newUser = userService.signUp(signUpDTO);
     return ResponseEntity.ok(userToUserDTOMapper.map(newUser));
   }

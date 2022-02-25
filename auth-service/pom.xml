@@ -118,6 +118,12 @@
             <artifactId>flyway-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-sqs</artifactId>
+            <version>1.12.95</version>
+        </dependency>
+
     </dependencies>
 
     <build>

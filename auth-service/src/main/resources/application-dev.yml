@@ -12,6 +12,15 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
+aws:
+  sqs:
+    accessKeyId: ${AWS_SQS_ACCESS_KEY_ID}
+    secretAccessKey: ${AWS_SQS_SECRET_ACCESS_KEY}
+    host: ${AWS_SQS_HOST}
+    region: ${AWS_SQS_REGION}
+    queues:
+      user-signed-up-queue-url: ${AWS_SQS_USER_SIGNED_UP_QUEUE_URL}
+
 security:
   oauth2:
     access-token-validity-seconds: ${ACCESS_TOKEN_VALIDITY_SECONDS}
