@@ -3,8 +3,10 @@ package com.toptal.playersservice.aggregates;
 import com.toptal.playersservice.aggregates.dtos.TeamWithPlayersDTO;
 import com.toptal.playersservice.domain.events.CreatedPlayerEvent;
 import com.toptal.playersservice.domain.events.CreatedTeamEvent;
+import com.toptal.playersservice.domain.events.UpdatedTeamEvent;
 import com.toptal.playersservice.domain.repositories.CreatedPlayerEventRepository;
 import com.toptal.playersservice.domain.repositories.CreatedTeamEventRepository;
+import com.toptal.playersservice.domain.repositories.UpdatedTeamEventRepository;
 import com.toptal.playersservice.resources.dtos.PlayerDTO;
 import com.toptal.playersservice.resources.dtos.TeamDTO;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class TeamWithPlayersAggregate {
 
   private final CreatedTeamEventRepository createdTeamEventRepository;
+  private final UpdatedTeamEventRepository updatedTeamEventRepository;
   private final CreatedPlayerEventRepository createdPlayerEventRepository;
 
   public List<TeamWithPlayersDTO> fetchTeamWithPlayersByOwnerID(final String ownerId) {
@@ -27,6 +30,7 @@ public class TeamWithPlayersAggregate {
     List<TeamWithPlayersDTO> result = new ArrayList<>();
 
     final List<CreatedTeamEvent> foundTeams = createdTeamEventRepository.findByOwnerId(ownerId);
+    final List<UpdatedTeamEvent> foundTeamsUpdates = updatedTeamEventRepository.findByTeamIdIn(getTeamsIds(foundTeams));
     final List<CreatedPlayerEvent> foundPlayers = createdPlayerEventRepository.findByTeamIdIn(getTeamsIds(foundTeams));
 
     for (CreatedTeamEvent team : foundTeams) {
@@ -35,12 +39,24 @@ public class TeamWithPlayersAggregate {
         .budget(team.getBudget())
         .country(team.getCountry())
         .name(team.getName())
-        .id(team.getId())
+        .id(team.getTeamId())
         .build();
+
+      final List<UpdatedTeamEvent> updatedForCurrentTeam = foundTeamsUpdates
+        .stream()
+        .filter(teamUpdate -> teamUpdate.getTeamId().equals(team.getTeamId()))
+        // .sorted() // TODO sort by date desc
+        .collect(Collectors.toList());
+
+      // TODO think about fetching the last event or loop
+      for (UpdatedTeamEvent update : updatedForCurrentTeam) {
+        teamDTO.setName(update.getName());
+        teamDTO.setCountry(update.getCountry());
+      }
 
       final List<CreatedPlayerEvent> playersForCurrentTeam = foundPlayers
         .stream()
-        .filter(player -> player.getTeamId().equals(team.getId()))
+        .filter(player -> player.getTeamId().equals(team.getTeamId()))
         .collect(Collectors.toList());
 
       List<PlayerDTO> playerDTOs = new ArrayList<>();
@@ -48,7 +64,7 @@ public class TeamWithPlayersAggregate {
       for (CreatedPlayerEvent player : playersForCurrentTeam) {
 
         final PlayerDTO playerDTO = PlayerDTO.builder()
-          .id(player.getId())
+          .id(player.getPlayerId())
           .age(player.getAge())
           .country(player.getCountry())
           .firstName(player.getFirstName())
@@ -70,7 +86,7 @@ public class TeamWithPlayersAggregate {
   }
 
   private List<String> getTeamsIds(final List<CreatedTeamEvent> teams) {
-    return teams.stream().map(CreatedTeamEvent::getId).collect(Collectors.toList());
+    return teams.stream().map(CreatedTeamEvent::getTeamId).collect(Collectors.toList());
   }
 
 }

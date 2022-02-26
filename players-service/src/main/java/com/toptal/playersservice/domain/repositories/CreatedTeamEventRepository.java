@@ -11,4 +11,6 @@ public interface CreatedTeamEventRepository extends MongoRepository<CreatedTeamE
 
   List<CreatedTeamEvent> findByOwnerId(String ownerId);
 
+  CreatedTeamEvent findByTeamId(String id);
+
 }

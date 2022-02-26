@@ -22,6 +22,7 @@ public class CreatedPlayerEvent {
 
   @Id
   private String id;
+  private String playerId;
   private String teamId;
   private String firstName;
   private String lastName;

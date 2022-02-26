@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -31,6 +32,7 @@ public class PlayersServiceImpl implements PlayersService {
 
     while (index <= noPlayers) {
       playersToCreate.add(CreatedPlayerEvent.builder()
+        .playerId(UUID.randomUUID().toString())
         .teamId(teamId)
         .type(getNextPlayerType(index))
         .marketValue(CreatedPlayerEvent.DEFAULT_PLAYER_MARKET_VALUE)
