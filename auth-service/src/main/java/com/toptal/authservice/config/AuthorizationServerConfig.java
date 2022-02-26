@@ -1,5 +1,6 @@
 package com.toptal.authservice.config;
 
+import com.toptal.authservice.domain.models.User;
 import com.toptal.authservice.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,20 +9,22 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Configuration
@@ -33,6 +36,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
   public static final String SCOPE_WRITE = "write";
   public static final String AUTHORIZED_GRANT_TYPE_PASSWORD = "password";
   public static final String AUTHORIZED_GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
+  public static final String TOKEN_ENHANCE_USER_ID = "uid";
 
   @Qualifier("authenticationManagerBean")
   private final AuthenticationManager authenticationManager;
@@ -59,9 +63,38 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
   @Bean
   public JwtAccessTokenConverter accessTokenConverter() {
-    final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+
+    final JwtAccessTokenConverter converter = new JwtAccessTokenConverter() {
+
+      @Override
+      public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+
+        final Optional<User> userOpt = Optional.ofNullable(userService.findByUsernameIgnoreCase(authentication.getName()));
+
+        if (userOpt.isPresent()) {
+          User user = userOpt.get();
+          final Map<String, Object> additionalInfo = new HashMap<>();
+          additionalInfo.put(TOKEN_ENHANCE_USER_ID, user.getId());
+
+          ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
+        }
+
+        accessToken = super.enhance(accessToken, authentication);
+        ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(new HashMap<>());
+        return accessToken;
+      }
+
+      @Override
+      public OAuth2Authentication extractAuthentication(Map<String, ?> map) {
+        OAuth2Authentication auth = super.extractAuthentication(map);
+        auth.setDetails(map);
+        return auth;
+      }
+    };
+
     converter.setSigningKey(privateKey);
     converter.setVerifierKey(publicKey);
+
     return converter;
   }
 
@@ -94,25 +127,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
       .authorizedGrantTypes(AUTHORIZED_GRANT_TYPE_PASSWORD, AUTHORIZED_GRANT_TYPE_REFRESH_TOKEN)
       .accessTokenValiditySeconds(accessTokenValiditySeconds)
       .refreshTokenValiditySeconds(refreshTokenValiditySeconds);
-  }
-
-  @Bean
-  @Primary
-  public DefaultTokenServices tokenServices() {
-
-    TokenEnhancerChain chain = new TokenEnhancerChain();
-    chain.setTokenEnhancers(Collections.singletonList(accessTokenConverter()));
-
-    DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-
-    defaultTokenServices.setTokenStore(tokenStore());
-    defaultTokenServices.setSupportRefreshToken(Boolean.TRUE);
-    defaultTokenServices.setAccessTokenValiditySeconds(accessTokenValiditySeconds);
-    defaultTokenServices.setRefreshTokenValiditySeconds(refreshTokenValiditySeconds);
-    defaultTokenServices.setAuthenticationManager(authenticationManager);
-    defaultTokenServices.setTokenEnhancer(chain);
-
-    return defaultTokenServices;
   }
 
 }

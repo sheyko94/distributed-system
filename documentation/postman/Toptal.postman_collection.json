@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "a0d10d14-f419-4fe1-a718-533ce232c307",
-		"name": "Toptal auth-service",
+		"name": "Toptal",
 		"description": "> Make sure ADMIN role already exists in the database before running this collection\n> Make sure the user doing sign up does not already exist",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -124,6 +124,87 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "teams",
+			"item": [
+				{
+					"name": "Get Team information",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{players_service_host}}/v1/team",
+							"host": [
+								"{{players_service_host}}"
+							],
+							"path": [
+								"v1",
+								"team"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{access_token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Status",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{auth_service_host}}/v1/status",
+					"host": [
+						"{{auth_service_host}}"
+					],
+					"path": [
+						"v1",
+						"status"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {

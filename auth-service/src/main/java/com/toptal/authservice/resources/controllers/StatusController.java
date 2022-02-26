@@ -19,9 +19,9 @@ public class StatusController {
 
   private final SecurityUtils securityUtils;
 
-  @GetMapping("v1/status")
+  @GetMapping
   public ResponseEntity<Void> getStatus() {
-    log.info(String.format("StatusController - status check (%s)", securityUtils.getLoggedUserUsername()));
+    log.info(String.format("StatusController - status check for user with ID %s and Username %s", securityUtils.getLoggedUserID(), securityUtils.getLoggedUserUsername()));
     return ResponseEntity.ok().build();
   }
 

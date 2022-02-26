@@ -10,6 +10,8 @@ import java.io.UnsupportedEncodingException;
 
 public interface UserService extends UserDetailsService {
 
+  User findByUsernameIgnoreCase(String username);
+
   User signUp(SignUpDTO signUpDto) throws ValidationException, UnsupportedEncodingException, JsonProcessingException;
 
 }

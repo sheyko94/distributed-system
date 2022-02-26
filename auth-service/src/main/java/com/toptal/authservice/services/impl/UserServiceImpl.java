@@ -35,6 +35,12 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public User findByUsernameIgnoreCase(String username) {
+    return Optional.ofNullable(userRepository.findByUsernameIgnoreCase(username))
+      .orElseThrow(() -> new UsernameNotFoundException(String.format("User not found with username %s", username)));
+  }
+
+  @Override
   @Transactional(rollbackOn = Exception.class)
   public User signUp(SignUpDTO signUpDto) throws ValidationException, JsonProcessingException {
 

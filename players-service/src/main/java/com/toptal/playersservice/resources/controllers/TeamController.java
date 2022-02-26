@@ -1,0 +1,32 @@
+package com.toptal.playersservice.resources.controllers;
+
+import com.toptal.playersservice.aggregates.TeamWithPlayersAggregate;
+import com.toptal.playersservice.aggregates.dtos.TeamWithPlayersDTO;
+import com.toptal.playersservice.shared.SecurityUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@Slf4j
+@RestController
+@RequestMapping(TeamController.TEAM_CONTROLLER_PREFIX)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class TeamController {
+
+  public final static String TEAM_CONTROLLER_PREFIX = "/v1/team";
+
+  private final TeamWithPlayersAggregate teamAndPlayersAggregate;
+  private final SecurityUtils securityUtils;
+
+  @GetMapping
+  public ResponseEntity<List<TeamWithPlayersDTO>> fetchTeamWithPlayersByLoggedUser() {
+    return ResponseEntity.ok(teamAndPlayersAggregate.fetchTeamWithPlayersByOwnerID(securityUtils.getLoggedUserID()));
+  }
+
+}

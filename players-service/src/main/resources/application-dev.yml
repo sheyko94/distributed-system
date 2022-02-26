@@ -19,3 +19,8 @@ aws:
     region: ${AWS_SQS_REGION}
     queues:
       user-signed-up-queue-url: ${AWS_SQS_USER_SIGNED_UP_QUEUE_URL}
+
+security:
+  oauth2:
+    public-key: ${TOPTAL_PUBLIC_KEY}
+    private-key: ${TOPTAL_PRIVATE_KEY}
