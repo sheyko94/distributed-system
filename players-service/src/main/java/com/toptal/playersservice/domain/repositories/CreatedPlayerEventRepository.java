@@ -11,4 +11,6 @@ public interface CreatedPlayerEventRepository extends MongoRepository<CreatedPla
 
   List<CreatedPlayerEvent> findByTeamIdIn(List<String> teamIds);
 
+  CreatedPlayerEvent findByPlayerId(String playerId);
+
 }

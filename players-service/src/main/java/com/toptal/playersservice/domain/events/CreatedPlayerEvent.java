@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 public class CreatedPlayerEvent {
 
   public static BigDecimal DEFAULT_PLAYER_MARKET_VALUE = BigDecimal.valueOf(1000000);
+  public static int MINIMUM_PLAYER_AGE = 18;
+  public static int MAXIMUM_PLAYER_AGE = 40;
 
   public enum PlayerTypeEnum {
     GOALKEEPER, DEFENDER, MIDFIELDER, ATTACKER

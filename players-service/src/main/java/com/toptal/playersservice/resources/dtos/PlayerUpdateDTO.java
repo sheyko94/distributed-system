@@ -2,19 +2,15 @@ package com.toptal.playersservice.resources.dtos;
 
 import lombok.*;
 
-import java.math.BigDecimal;
-
 @Setter
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeamDTO {
+public class PlayerUpdateDTO {
 
-  private String id;
-  private BigDecimal budget;
-  private String name;
+  private String firstName;
+  private String lastName;
   private String country;
-  private BigDecimal value;
 
 }
