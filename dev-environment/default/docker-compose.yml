@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
 
-  # Local Stack (AWS fake)
+  # Local Stack (AWS local)
   localstack:
     image: localstack/localstack:0.12.18
     ports:
@@ -44,7 +44,40 @@ services:
     working_dir: /auth-service
     command: mvn compile spring-boot:run -DskipTests=true
 
+  # Players Service DB
+  players-service-db:
+    image: bitnami/mongodb:5.0.3
+    ports:
+      - 27018:27018
+    container_name: players-service-db
+    env_file:
+      - ../config/players.env
+    volumes:
+      - mongodb-players-service-data:/data/db
+    environment:
+      - MONGODB_PORT_NUMBER=27018
+      - MONGODB_USERNAME=test123
+      - MONGODB_PASSWORD=test123
+      - MONGODB_DATABASE=players-service-db
+
+  # Players Service
+  players-service:
+    image: maven:3.6.3-openjdk-11
+    ports:
+      - 8082:8082
+    container_name: players-service
+    env_file:
+      - ../config/common.env
+      - ../config/players.env
+    volumes:
+      - ${M2_PATH}:/root/.m2
+      - ../../players-service:/players-service
+    working_dir: /players-service
+    command: mvn compile spring-boot:run -DskipTests=true
+
 # Volumes
 volumes:
   db-data:
   localstackdata:
+  mongodb-players-service-data:
+
