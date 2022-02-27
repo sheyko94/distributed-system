@@ -16,3 +16,4 @@ aws:
     region: eu-west-1
     queues:
       user-signed-up-queue-url: http://localhost:4566/000000000000/UserSignedUpQueueURL
+      player-bought-queue-url: http://localhost:4566/000000000000/PlayerBoughtQueueURL.fifo

@@ -17,6 +17,15 @@ spring:
 hosts:
   players-service: 'http://localhost:8082'
 
+aws:
+  sqs:
+    accessKeyId: 123
+    secretAccessKey: 123
+    host: http://localhost:4566
+    region: eu-west-1
+    queues:
+      player-bought-queue-url: http://localhost:4566/000000000000/PlayerBoughtQueueURL.fifo
+
 security:
   oauth2:
     public-key: -----BEGIN PUBLIC KEY-----

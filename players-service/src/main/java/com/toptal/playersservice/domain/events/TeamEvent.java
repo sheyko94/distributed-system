@@ -23,7 +23,7 @@ public class TeamEvent {
   }
 
   public enum TeamEventSubtype {
-    TEAM_UPDATE_INFO
+    TEAM_UPDATE_INFO, TEAM_UPDATE_BUDGET
   }
 
   @Id

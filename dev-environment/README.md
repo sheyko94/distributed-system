@@ -15,7 +15,7 @@ Amazon Simple Queue Service (SQS) is a fully managed message queuing service tha
 Useful commands when working with SQS *(--endpoint-url only needed if working locally)*:
 
 - `aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name UserSignedUpQueueURL`
-
+- `aws --endpoint-url http://localhost:4566 sqs create-queue --queue-name PlayerBoughtQueueURL.fifo`
 
 - `aws --endpoint-url http://localhost:4566 sqs list-queues`
 

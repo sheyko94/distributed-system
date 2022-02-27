@@ -1,5 +1,6 @@
 package com.toptal.marketservice.resources.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.toptal.marketservice.resources.dtos.MarketBuyPlayerDTO;
 import com.toptal.marketservice.resources.dtos.MarketSellPlayerDTO;
 import com.toptal.marketservice.services.MarketService;
@@ -31,8 +32,7 @@ public class MarketController {
   }
 
   @PostMapping("player/{id}/buy")
-  public ResponseEntity<Void> buyPlayer(@PathVariable("id") final String id, @RequestBody final MarketBuyPlayerDTO marketBuyPlayerDTO) {
-    log.info("@@@@@@@");
+  public ResponseEntity<Void> buyPlayer(@PathVariable("id") final String id, @RequestBody final MarketBuyPlayerDTO marketBuyPlayerDTO) throws JsonProcessingException {
     marketService.buyPlayer(id, marketBuyPlayerDTO);
     return ResponseEntity.ok().build();
   }

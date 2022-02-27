@@ -14,6 +14,15 @@ spring:
 hosts:
   players-service: ${PLAYERS_SERVICE_HOST}
 
+aws:
+  sqs:
+    accessKeyId: ${AWS_SQS_ACCESS_KEY_ID}
+    secretAccessKey: ${AWS_SQS_SECRET_ACCESS_KEY}
+    host: ${AWS_SQS_HOST}
+    region: ${AWS_SQS_REGION}
+    queues:
+      player-bought-queue-url: ${AWS_SQS_PLAYER_BOUGHT_QUEUE_URL}
+
 security:
   oauth2:
     public-key: ${TOPTAL_PUBLIC_KEY}

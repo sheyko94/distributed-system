@@ -48,8 +48,8 @@ public class TeamFullAggregate {
       if (TeamEvent.TeamEventSubtype.TEAM_UPDATE_INFO.equals(update.getEventSubtype())) {
         teamFullDTO.setName(update.getName());
         teamFullDTO.setCountry(update.getCountry());
-      } else {
-        // TODO market events
+      } else if (TeamEvent.TeamEventSubtype.TEAM_UPDATE_BUDGET.equals(update.getEventSubtype())) {
+        teamFullDTO.setBudget(update.getBudget());
       }
     }
 

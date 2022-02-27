@@ -18,13 +18,15 @@ public class PlayerEvent {
   public static BigDecimal DEFAULT_PLAYER_MARKET_VALUE = BigDecimal.valueOf(1000000);
   public static int MINIMUM_PLAYER_AGE = 18;
   public static int MAXIMUM_PLAYER_AGE = 40;
+  public static int MINIMUM_PLAYER_MARKET_VALUE_PERCENT_INCREMENT = 10;
+  public static int MAXIMUM_PLAYER_MARKET_VALUE_PERCENT_INCREMENT = 100;
 
   public enum PlayerEventType {
     PLAYER_CREATE, PLAYER_UPDATE
   }
 
   public enum PlayerEventSubtype {
-    PLAYER_UPDATE_INFO
+    PLAYER_UPDATE_INFO, PLAYER_TRANSFER
   }
 
   public enum PlayerTypeEnum {

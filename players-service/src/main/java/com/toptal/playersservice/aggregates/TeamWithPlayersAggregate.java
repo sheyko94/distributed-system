@@ -58,8 +58,8 @@ public class TeamWithPlayersAggregate {
         if (TeamEvent.TeamEventSubtype.TEAM_UPDATE_INFO.equals(update.getEventSubtype())) {
           teamDTO.setName(update.getName());
           teamDTO.setCountry(update.getCountry());
-        } else {
-          // TODO market events
+        } else if (TeamEvent.TeamEventSubtype.TEAM_UPDATE_BUDGET.equals(update.getEventSubtype())) {
+          teamDTO.setBudget(update.getBudget());
         }
       }
 
@@ -99,8 +99,8 @@ public class TeamWithPlayersAggregate {
             playerDTO.setFirstName(update.getFirstName());
             playerDTO.setLastName(update.getLastName());
             playerDTO.setCountry(update.getCountry());
-          } else {
-            // TODO market events
+          } else if (PlayerEvent.PlayerEventSubtype.PLAYER_TRANSFER.equals(update.getEventSubtype())) {
+            playerDTO.setMarketValue(update.getMarketValue());
           }
         }
 

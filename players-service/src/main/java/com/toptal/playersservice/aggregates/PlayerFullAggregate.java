@@ -25,6 +25,8 @@ public class PlayerFullAggregate {
 
   public PlayerFullDTO fetchPlayerFullInformation(final String playerId) {
 
+    log.info("Calling fetchPlayerFullInformation for player ID {}", playerId);
+
     final List<PlayerEvent> playerEvents = playerEventRepository.findByPlayerId(playerId);
 
     final PlayerEvent createdPlayerEvent = playerEvents
@@ -53,13 +55,13 @@ public class PlayerFullAggregate {
       .collect(Collectors.toList());
 
     for (PlayerEvent update : updatedPlayerEvents) {
-
       if (PlayerEvent.PlayerEventSubtype.PLAYER_UPDATE_INFO.equals(update.getEventSubtype())) {
         playerFullDTO.setFirstName(update.getFirstName());
         playerFullDTO.setLastName(update.getLastName());
         playerFullDTO.setCountry(update.getCountry());
-      } else {
-        // TODO market events
+      } else if (PlayerEvent.PlayerEventSubtype.PLAYER_TRANSFER.equals(update.getEventSubtype())) {
+        playerFullDTO.setTeamId(update.getTeamId());
+        playerFullDTO.setMarketValue(update.getMarketValue());
       }
     }
 

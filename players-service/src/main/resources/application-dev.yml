@@ -19,6 +19,7 @@ aws:
     region: ${AWS_SQS_REGION}
     queues:
       user-signed-up-queue-url: ${AWS_SQS_USER_SIGNED_UP_QUEUE_URL}
+      player-bought-queue-url: ${AWS_SQS_PLAYER_BOUGHT_QUEUE_URL}
 
 security:
   oauth2:
