@@ -1,6 +1,6 @@
 package com.toptal.playersservice.resources.dtos;
 
-import com.toptal.playersservice.domain.events.CreatedPlayerEvent;
+import com.toptal.playersservice.domain.events.PlayerEvent;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -18,6 +18,6 @@ public class PlayerDTO {
   private String country;
   private Integer age;
   private BigDecimal marketValue;
-  private CreatedPlayerEvent.PlayerTypeEnum type;
+  private PlayerEvent.PlayerTypeEnum type;
 
 }

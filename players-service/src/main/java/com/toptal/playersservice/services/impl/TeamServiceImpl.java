@@ -1,12 +1,11 @@
 package com.toptal.playersservice.services.impl;
 
-import com.toptal.playersservice.domain.events.CreatedTeamEvent;
-import com.toptal.playersservice.domain.events.UpdatedTeamEvent;
-import com.toptal.playersservice.domain.repositories.CreatedTeamEventRepository;
-import com.toptal.playersservice.domain.repositories.UpdatedTeamEventRepository;
+import com.toptal.playersservice.domain.events.TeamEvent;
+import com.toptal.playersservice.domain.repositories.TeamEventRepository;
 import com.toptal.playersservice.resources.dtos.TeamDTO;
 import com.toptal.playersservice.resources.dtos.TeamUpdateDTO;
 import com.toptal.playersservice.services.TeamService;
+import com.toptal.playersservice.shared.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
@@ -21,19 +21,28 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TeamServiceImpl implements TeamService {
 
-  private final CreatedTeamEventRepository createdTeamEventRepository;
-  private final UpdatedTeamEventRepository updatedTeamEventRepository;
+  private final TeamEventRepository teamEventRepository;
+  private final SecurityUtils securityUtils;
 
   @Override
   public TeamDTO update(String teamId, TeamUpdateDTO teamUpdateDTO) {
 
-    final CreatedTeamEvent createdTeamEvent = Optional.ofNullable(createdTeamEventRepository.findByTeamId(teamId))
+    final TeamEvent createdTeamEvent = Optional.ofNullable(teamEventRepository.findByTeamIdAndEventType(teamId, TeamEvent.TeamEventType.TEAM_CREATE))
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Team with ID %s not found", teamId)));
+
+    final String loggedUserId = securityUtils.getLoggedUserID();
+
+    if (!createdTeamEvent.getOwnerId().equals(loggedUserId)) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, String.format("User with ID %s can not update the Team with ID %s", loggedUserId, teamId));
+    }
 
     final String newName = teamUpdateDTO.getName();
     final String newCountry = teamUpdateDTO.getCountry();
 
-    final UpdatedTeamEvent updatedTeamEvent = updatedTeamEventRepository.save(UpdatedTeamEvent.builder()
+    final TeamEvent updatedTeamEvent = teamEventRepository.save(TeamEvent.builder()
+      .date(new Date())
+      .eventType(TeamEvent.TeamEventType.TEAM_UPDATE)
+      .eventSubtype(TeamEvent.TeamEventSubtype.TEAM_UPDATE_INFO)
       .teamId(teamId)
       .name(newName)
       .country(newCountry)

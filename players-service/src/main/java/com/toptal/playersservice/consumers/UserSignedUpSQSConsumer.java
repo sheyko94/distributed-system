@@ -5,7 +5,7 @@ import com.amazonaws.services.sqs.model.Message;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toptal.playersservice.clients.SQSClient;
 import com.toptal.playersservice.consumers.dtos.UserSignedUpSQSConsumerDTO;
-import com.toptal.playersservice.domain.events.CreatedTeamEvent;
+import com.toptal.playersservice.domain.events.TeamEvent;
 import com.toptal.playersservice.handlers.CreatedTeamEventHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +51,7 @@ public class UserSignedUpSQSConsumer {
       final UserSignedUpSQSConsumerDTO userSignedUpSQSConsumerDTO = objectMapper.readValue(message.getBody(), UserSignedUpSQSConsumerDTO.class);
       final String userId = userSignedUpSQSConsumerDTO.getId();
 
-      CreatedTeamEvent createdTeamEvent = createdTeamEventHandler.generate(userId);
+      TeamEvent createdTeamEvent = createdTeamEventHandler.generate(userId);
 
       log.info("Successfully created Team with ID {} for user with ID {}", createdTeamEvent.getId(), userId);
 
