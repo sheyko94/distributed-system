@@ -42,7 +42,10 @@ public class MarketServiceImpl implements MarketService {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, String.format("You can not sell the Player with ID %s because you do not own it", playerId));
     }
 
-    if (Objects.nonNull(fetchEventIfPlayerIsBeingSold(playerId))) {
+    final List<MarketEvent> events = marketEventRepository.findByPlayerIdAndEventTypeIn(playerId, Arrays.asList(
+      MarketEvent.MarketEventType.PLAYER_SALE, MarketEvent.MarketEventType.PLAYER_BOUGHT));
+
+    if (Objects.nonNull(getSellingEventOrNull(events))) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("The Player with ID %s is already being sold", playerId));
     }
 
@@ -60,7 +63,10 @@ public class MarketServiceImpl implements MarketService {
   @Override
   public void buyPlayer(final String playerId, final MarketBuyPlayerDTO marketBuyPlayerDTO) throws JsonProcessingException {
 
-    final MarketEvent sellingPlayerEvent = fetchEventIfPlayerIsBeingSold(playerId);
+    final List<MarketEvent> events = marketEventRepository.findByPlayerIdAndEventTypeIn(playerId, Arrays.asList(
+      MarketEvent.MarketEventType.PLAYER_SALE, MarketEvent.MarketEventType.PLAYER_BOUGHT));
+
+    final MarketEvent sellingPlayerEvent = getSellingEventOrNull(events);
 
     if (Objects.isNull(sellingPlayerEvent)) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("The Player with ID %s is not being sold", playerId));
@@ -105,10 +111,9 @@ public class MarketServiceImpl implements MarketService {
   }
 
   @Override
-  public MarketEvent fetchEventIfPlayerIsBeingSold(String playerId) {
+  public MarketEvent getSellingEventOrNull(final List<MarketEvent> events) {
 
-    final List<MarketEvent> marketEventsForThePlayer = marketEventRepository.findByPlayerIdAndEventTypeIn(playerId, Arrays.asList(
-      MarketEvent.MarketEventType.PLAYER_SALE, MarketEvent.MarketEventType.PLAYER_BOUGHT))
+    final List<MarketEvent> marketEventsForThePlayer = events
       .stream()
       .sorted(Comparator.comparing(MarketEvent::getDate))
       .collect(Collectors.toList());
