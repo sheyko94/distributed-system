@@ -1,8 +1,9 @@
 package com.toptal.playersservice.services.impl;
 
+import com.toptal.playersservice.aggregates.TeamFullAggregate;
 import com.toptal.playersservice.domain.events.TeamEvent;
 import com.toptal.playersservice.domain.repositories.TeamEventRepository;
-import com.toptal.playersservice.resources.dtos.TeamDTO;
+import com.toptal.playersservice.resources.dtos.TeamFullDTO;
 import com.toptal.playersservice.resources.dtos.TeamUpdateDTO;
 import com.toptal.playersservice.services.TeamService;
 import com.toptal.playersservice.shared.SecurityUtils;
@@ -23,9 +24,10 @@ public class TeamServiceImpl implements TeamService {
 
   private final TeamEventRepository teamEventRepository;
   private final SecurityUtils securityUtils;
+  private final TeamFullAggregate teamFullAggregate;
 
   @Override
-  public TeamDTO update(String teamId, TeamUpdateDTO teamUpdateDTO) {
+  public TeamFullDTO update(String teamId, TeamUpdateDTO teamUpdateDTO) {
 
     final TeamEvent createdTeamEvent = Optional.ofNullable(teamEventRepository.findByTeamIdAndEventType(teamId, TeamEvent.TeamEventType.TEAM_CREATE))
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Team with ID %s not found", teamId)));
@@ -50,13 +52,7 @@ public class TeamServiceImpl implements TeamService {
 
     log.info("Team with ID {} has been updated. Event ID {}", teamId, updatedTeamEvent.getId());
 
-    // TODO this return should return an element from an aggregate with the last version of a team based on all the events
-    return TeamDTO.builder()
-      .id(teamId)
-      .budget(createdTeamEvent.getBudget())
-      .name(newName)
-      .country(newCountry)
-      .build();
+    return teamFullAggregate.fetchByTeamId(teamId);
   }
 
 }

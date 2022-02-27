@@ -26,7 +26,7 @@ public class MarketController {
   private final MarketAggregate marketAggregate;
 
   @GetMapping
-  public ResponseEntity<List<MarketPlayerSellingDTO>> getActiveMarket() {
+  public ResponseEntity<List<MarketPlayerSellingDTO>> getActiveMarket() throws JsonProcessingException {
     return ResponseEntity.ok(marketAggregate.fetchMarket());
   }
 

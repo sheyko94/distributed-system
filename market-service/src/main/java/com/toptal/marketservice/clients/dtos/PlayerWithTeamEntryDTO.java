@@ -9,10 +9,10 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlayerFullDTO {
+public class PlayerWithTeamEntryDTO {
 
   private String id;
-  private String teamId;
+  private String teamName;
   private String firstName;
   private String lastName;
   private String country;

@@ -1,5 +1,8 @@
 package com.toptal.marketservice.aggregates;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.toptal.marketservice.clients.PlayersServiceClient;
+import com.toptal.marketservice.clients.dtos.PlayerWithTeamEntryDTO;
 import com.toptal.marketservice.domain.events.MarketEvent;
 import com.toptal.marketservice.domain.repositories.MarketEventRepository;
 import com.toptal.marketservice.services.MarketService;
@@ -21,8 +24,9 @@ public class MarketAggregate {
 
   private final MarketEventRepository marketEventRepository;
   private final MarketService marketService;
+  private final PlayersServiceClient playersServiceClient;
 
-  public List<MarketPlayerSellingDTO> fetchMarket() {
+  public List<MarketPlayerSellingDTO> fetchMarket() throws JsonProcessingException {
 
     log.info("Calling fetchMarket...");
 
@@ -43,6 +47,28 @@ public class MarketAggregate {
           .marketValue(sellingEvent.getValue())
           .build());
       }
+    }
+
+    final List<PlayerWithTeamEntryDTO> playerWithTeamEntryDTOs = playersServiceClient.fetchPlayersWithTeam(result
+      .stream()
+      .map(MarketPlayerSellingDTO::getId)
+      .collect(Collectors.toList()))
+      .getPlayers();
+
+    for (MarketPlayerSellingDTO marketPlayerSellingDTO : result) {
+
+      final PlayerWithTeamEntryDTO playerWithTeamEntry = playerWithTeamEntryDTOs
+        .stream()
+        .filter(entry -> entry.getId().equals(marketPlayerSellingDTO.getId()))
+        .findFirst()
+        .get();
+
+      marketPlayerSellingDTO.setTeamName(playerWithTeamEntry.getTeamName());
+      marketPlayerSellingDTO.setFirstName(playerWithTeamEntry.getFirstName());
+      marketPlayerSellingDTO.setLastName(playerWithTeamEntry.getLastName());
+      marketPlayerSellingDTO.setCountry(playerWithTeamEntry.getCountry());
+      marketPlayerSellingDTO.setAge(playerWithTeamEntry.getAge());
+      marketPlayerSellingDTO.setType(playerWithTeamEntry.getType());
     }
 
     return result;

@@ -37,8 +37,9 @@ public class MarketServiceImpl implements MarketService {
   public void sellPlayer(final String playerId, final MarketSellPlayerDTO marketSellPlayerDTO) {
 
     final PlayerFullDTO playerFullDTO = playersServiceClient.fetchPlayerFullInformation(playerId);
+    final TeamFullDTO buyingTeamFullDTO = playersServiceClient.fetchTeamFullInformation(playerFullDTO.getTeamId());
 
-    if (!playerFullDTO.getOwnerId().equals(securityUtils.getLoggedUserID())) {
+    if (!buyingTeamFullDTO.getOwnerId().equals(securityUtils.getLoggedUserID())) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, String.format("You can not sell the Player with ID %s because you do not own it", playerId));
     }
 

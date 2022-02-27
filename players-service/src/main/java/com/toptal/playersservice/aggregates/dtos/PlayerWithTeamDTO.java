@@ -1,7 +1,5 @@
-package com.toptal.playersservice.resources.dtos;
+package com.toptal.playersservice.aggregates.dtos;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.toptal.playersservice.domain.events.PlayerEvent;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -11,16 +9,16 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class PlayerFullDTO {
+public class PlayerWithTeamDTO {
 
   private String id;
   private String teamId;
+  private String teamName;
   private String firstName;
   private String lastName;
   private String country;
   private Integer age;
+  private String type;
   private BigDecimal marketValue;
-  private PlayerEvent.PlayerTypeEnum type;
 
 }

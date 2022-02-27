@@ -1,7 +1,7 @@
 package com.toptal.playersservice.aggregates.dtos;
 
-import com.toptal.playersservice.resources.dtos.PlayerDTO;
-import com.toptal.playersservice.resources.dtos.TeamDTO;
+import com.toptal.playersservice.resources.dtos.PlayerFullDTO;
+import com.toptal.playersservice.resources.dtos.TeamFullDTO;
 import lombok.*;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TeamWithPlayersDTO {
 
-  private TeamDTO team;
-  private List<PlayerDTO> players;
+  private TeamFullDTO team;
+  private List<PlayerFullDTO> players;
 
 }

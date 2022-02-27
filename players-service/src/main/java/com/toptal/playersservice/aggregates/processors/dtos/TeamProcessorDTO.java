@@ -1,4 +1,4 @@
-package com.toptal.playersservice.resources.dtos;
+package com.toptal.playersservice.aggregates.processors.dtos;
 
 import lombok.*;
 
@@ -9,12 +9,12 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeamDTO {
+public class TeamProcessorDTO {
 
   private String id;
-  private BigDecimal budget;
+  private String ownerId;
   private String name;
   private String country;
-  private BigDecimal value;
+  private BigDecimal budget;
 
 }

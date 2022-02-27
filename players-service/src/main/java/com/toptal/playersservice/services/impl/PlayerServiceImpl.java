@@ -1,10 +1,11 @@
 package com.toptal.playersservice.services.impl;
 
+import com.toptal.playersservice.aggregates.PlayerFullAggregate;
 import com.toptal.playersservice.domain.events.PlayerEvent;
 import com.toptal.playersservice.domain.events.TeamEvent;
 import com.toptal.playersservice.domain.repositories.PlayerEventRepository;
 import com.toptal.playersservice.domain.repositories.TeamEventRepository;
-import com.toptal.playersservice.resources.dtos.PlayerDTO;
+import com.toptal.playersservice.resources.dtos.PlayerFullDTO;
 import com.toptal.playersservice.resources.dtos.PlayerUpdateDTO;
 import com.toptal.playersservice.services.PlayerService;
 import com.toptal.playersservice.shared.SecurityUtils;
@@ -28,6 +29,7 @@ public class PlayerServiceImpl implements PlayerService {
   private final PlayerEventRepository playerEventRepository;
   private final SecurityUtils securityUtils;
   private final TeamEventRepository teamEventRepository;
+  private final PlayerFullAggregate playerFullAggregate;
 
   @Override
   public List<PlayerEvent> batchGenerate(String teamId, int noPlayers) {
@@ -36,7 +38,7 @@ public class PlayerServiceImpl implements PlayerService {
   }
 
   @Override
-  public PlayerDTO update(String playerId, PlayerUpdateDTO playerUpdateDTO) {
+  public PlayerFullDTO update(String playerId, PlayerUpdateDTO playerUpdateDTO) {
 
     final PlayerEvent createdPlayerEvent = Optional.ofNullable(playerEventRepository.findByPlayerIdAndEventType(playerId, PlayerEvent.PlayerEventType.PLAYER_CREATE))
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Player with ID %s not found", playerId)));
@@ -69,16 +71,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     log.info("Player with ID {} has been updated. Event ID {}", playerId, updatedPlayerEvent.getId());
 
-    // TODO this return should return an element from an aggregate with the last version of a player based on all the events
-    return PlayerDTO.builder()
-      .id(playerId)
-      .marketValue(createdPlayerEvent.getMarketValue())
-      .firstName(newFirstName)
-      .lastName(newLastName)
-      .country(newCountry)
-      .type(createdPlayerEvent.getType())
-      .age(createdPlayerEvent.getAge())
-      .build();
+    return playerFullAggregate.fetchByPlayerId(playerId);
   }
 
   private List<PlayerEvent> generatePlayersToCreate(String teamId, int noPlayers) {

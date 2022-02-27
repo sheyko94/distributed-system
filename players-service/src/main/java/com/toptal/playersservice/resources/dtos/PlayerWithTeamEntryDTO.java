@@ -11,13 +11,15 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TeamFullDTO {
+public class PlayerWithTeamEntryDTO {
 
   private String id;
-  private String ownerId;
-  private String name;
+  private String teamName;
+  private String firstName;
+  private String lastName;
   private String country;
-  private BigDecimal budget;
-  private BigDecimal value;
+  private Integer age;
+  private BigDecimal marketValue;
+  private String type;
 
 }

@@ -3,7 +3,7 @@ package com.toptal.playersservice.resources.dtos;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @Setter
 @Getter
@@ -11,13 +11,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TeamFullDTO {
+public class PlayersWithTeamGroupDTO {
 
-  private String id;
-  private String ownerId;
-  private String name;
-  private String country;
-  private BigDecimal budget;
-  private BigDecimal value;
+  private List<PlayerWithTeamEntryDTO> players;
 
 }

@@ -9,12 +9,12 @@ import java.util.List;
 @Repository
 public interface PlayerEventRepository extends MongoRepository<PlayerEvent, String> {
 
-  List<PlayerEvent> findByTeamIdInAndEventType(List<String> teamIds, PlayerEvent.PlayerEventType eventType);
+  List<PlayerEvent> findByTeamIdIn(List<String> teamIds);
 
   PlayerEvent findByPlayerIdAndEventType(String playerId, PlayerEvent.PlayerEventType eventType);
 
-  List<PlayerEvent> findByPlayerIdInAndEventType(List<String> playerIds, PlayerEvent.PlayerEventType eventType);
-
   List<PlayerEvent> findByPlayerId(String playerId);
+
+  List<PlayerEvent> findByPlayerIdIn(List<String> playerIds);
 
 }

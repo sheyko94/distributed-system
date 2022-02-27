@@ -1,14 +1,14 @@
 package com.toptal.playersservice.aggregates;
 
+import com.toptal.playersservice.aggregates.processors.TeamProcessor;
+import com.toptal.playersservice.aggregates.processors.dtos.TeamProcessorDTO;
 import com.toptal.playersservice.domain.events.TeamEvent;
 import com.toptal.playersservice.domain.repositories.TeamEventRepository;
 import com.toptal.playersservice.resources.dtos.TeamFullDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,41 +19,44 @@ import java.util.stream.Collectors;
 public class TeamFullAggregate {
 
   private final TeamEventRepository teamEventRepository;
+  private final TeamProcessor teamProcessor;
 
-  public TeamFullDTO fetchTeamFullInformation(final String teamId) {
+  public TeamFullDTO fetchByTeamId(final String teamId) {
+
+    log.info("Calling TeamFullAggregate.fetchByTeamId for team ID {}", teamId);
 
     final List<TeamEvent> teamEvents = teamEventRepository.findByTeamId(teamId);
-
-    final TeamEvent createTeamEvent = teamEvents
+    final TeamProcessorDTO teamProcessed = teamProcessor.process(teamEvents)
       .stream()
-      .filter(teamEvent -> TeamEvent.TeamEventType.TEAM_CREATE.equals(teamEvent.getEventType()))
+      .filter(teamProcessorDTO -> teamProcessorDTO.getId().equals(teamId))
       .findFirst()
-      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Team with ID %s not found", teamId)));
+      .get();
 
-    TeamFullDTO teamFullDTO = TeamFullDTO.builder()
+    return TeamFullDTO.builder()
       .id(teamId)
-      .ownerId(createTeamEvent.getOwnerId())
-      .name(createTeamEvent.getName())
-      .country(createTeamEvent.getCountry())
-      .budget(createTeamEvent.getBudget())
+      .ownerId(teamProcessed.getOwnerId())
+      .name(teamProcessed.getName())
+      .country(teamProcessed.getCountry())
+      .budget(teamProcessed.getBudget())
       .build();
+  }
 
-    final List<TeamEvent> updatedTeamEvents = teamEvents
+  public List<TeamFullDTO> fetchByTeamIds(final List<String> teamIds) {
+
+    log.info("Calling TeamFullAggregate.fetchByTeamIds for team IDs {}", teamIds);
+
+    final List<TeamEvent> teamEvents = teamEventRepository.findByTeamIdIn(teamIds);
+    return teamProcessor.process(teamEvents)
       .stream()
-      .filter(playerEvent -> TeamEvent.TeamEventType.TEAM_UPDATE.equals(playerEvent.getEventType()))
-      .collect(Collectors.toList());
+      .map(teamProcessorDTO -> TeamFullDTO.builder()
+        .id(teamProcessorDTO.getId())
+        .ownerId(teamProcessorDTO.getOwnerId())
+        .name(teamProcessorDTO.getName())
+        .country(teamProcessorDTO.getCountry())
+        .budget(teamProcessorDTO.getBudget())
+        .build()
+      ).collect(Collectors.toList());
 
-    for (TeamEvent update : updatedTeamEvents) {
-
-      if (TeamEvent.TeamEventSubtype.TEAM_UPDATE_INFO.equals(update.getEventSubtype())) {
-        teamFullDTO.setName(update.getName());
-        teamFullDTO.setCountry(update.getCountry());
-      } else if (TeamEvent.TeamEventSubtype.TEAM_UPDATE_BUDGET.equals(update.getEventSubtype())) {
-        teamFullDTO.setBudget(update.getBudget());
-      }
-    }
-
-    return teamFullDTO;
   }
 
 }

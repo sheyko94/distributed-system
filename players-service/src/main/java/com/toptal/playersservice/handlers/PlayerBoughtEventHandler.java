@@ -41,7 +41,7 @@ public class PlayerBoughtEventHandler {
       .eventType(TeamEvent.TeamEventType.TEAM_UPDATE)
       .eventSubtype(TeamEvent.TeamEventSubtype.TEAM_UPDATE_BUDGET)
       .teamId(sellingTeamId)
-      .budget(teamFullAggregate.fetchTeamFullInformation(sellingTeamId).getBudget().add(value))
+      .budget(teamFullAggregate.fetchByTeamId(sellingTeamId).getBudget().add(value))
       .build();
 
     final String buyingTeamId = playerBoughtSQSConsumerDTO.getBuyingTeamId();
@@ -50,13 +50,13 @@ public class PlayerBoughtEventHandler {
       .eventType(TeamEvent.TeamEventType.TEAM_UPDATE)
       .eventSubtype(TeamEvent.TeamEventSubtype.TEAM_UPDATE_BUDGET)
       .teamId(buyingTeamId)
-      .budget(teamFullAggregate.fetchTeamFullInformation(buyingTeamId).getBudget().subtract(value))
+      .budget(teamFullAggregate.fetchByTeamId(buyingTeamId).getBudget().subtract(value))
       .build();
 
     teamEventRepository.saveAll(Arrays.asList(updatedSellingTeamEvent, updatedBuyingTeamEvent));
 
     final String playerId = playerBoughtSQSConsumerDTO.getPlayerId();
-    final PlayerFullDTO playerFullDTO = playerFullAggregate.fetchPlayerFullInformation(playerId);
+    final PlayerFullDTO playerFullDTO = playerFullAggregate.fetchByPlayerId(playerId);
 
     final PlayerEvent updatedPlayerEvent = PlayerEvent.builder()
       .date(new Date())

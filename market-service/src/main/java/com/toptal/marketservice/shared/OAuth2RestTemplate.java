@@ -30,19 +30,8 @@ public class OAuth2RestTemplate {
     return restTemplate.exchange(url, HttpMethod.GET, buildHttpEntity(getTokenFromHeader()), responseType);
   }
 
-  public <T> ResponseEntity<T> get(String url, String token, Class<T> responseType) {
-
-    return restTemplate.exchange(url, HttpMethod.GET, buildHttpEntity(token), responseType);
-  }
-
   public <T> ResponseEntity<T> post(String url, Object payload, Class<T> responseType) throws JsonProcessingException {
-
-    return restTemplate.exchange(url, HttpMethod.POST, buildHttpEntity(payload, getTokenFromHeader()), responseType);
-  }
-
-  public <T> ResponseEntity<T> put(String url, Object payload, Class<T> responseType) throws JsonProcessingException {
-
-    return restTemplate.exchange(url, HttpMethod.PUT, buildHttpEntity(payload, getTokenFromHeader()), responseType);
+    return restTemplate.postForEntity(url, buildHttpEntity(payload, getTokenFromHeader()), responseType);
   }
 
   private String getTokenFromHeader() {

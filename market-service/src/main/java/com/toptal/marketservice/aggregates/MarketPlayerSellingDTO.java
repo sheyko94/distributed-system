@@ -11,9 +11,14 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class MarketPlayerSellingDTO {
 
-  // TODO add more fields here and query players-service to fetch values
   private String id;
   private String teamId;
+  private String teamName;
+  private String firstName;
+  private String lastName;
+  private String country;
+  private Integer age;
+  private String type;
   private BigDecimal marketValue;
 
 }

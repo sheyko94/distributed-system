@@ -1,16 +1,14 @@
 package com.toptal.playersservice.aggregates;
 
+import com.toptal.playersservice.aggregates.processors.PlayerProcessor;
+import com.toptal.playersservice.aggregates.processors.dtos.PlayerProcessorDTO;
 import com.toptal.playersservice.domain.events.PlayerEvent;
-import com.toptal.playersservice.domain.events.TeamEvent;
 import com.toptal.playersservice.domain.repositories.PlayerEventRepository;
-import com.toptal.playersservice.domain.repositories.TeamEventRepository;
 import com.toptal.playersservice.resources.dtos.PlayerFullDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,52 +18,50 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class PlayerFullAggregate {
 
-  private final TeamEventRepository teamEventRepository;
   private final PlayerEventRepository playerEventRepository;
+  private final PlayerProcessor playerProcessor;
 
-  public PlayerFullDTO fetchPlayerFullInformation(final String playerId) {
+  public PlayerFullDTO fetchByPlayerId(final String playerId) {
 
-    log.info("Calling fetchPlayerFullInformation for player ID {}", playerId);
+    log.info("Calling PlayerFullAggregate.fetchByPlayerId for player ID {}", playerId);
 
     final List<PlayerEvent> playerEvents = playerEventRepository.findByPlayerId(playerId);
-
-    final PlayerEvent createdPlayerEvent = playerEvents
+    final PlayerProcessorDTO playerProcessed = playerProcessor.process(playerEvents)
       .stream()
-      .filter(playerEvent -> PlayerEvent.PlayerEventType.PLAYER_CREATE.equals(playerEvent.getEventType()))
+      .filter(playerProcessorDTO -> playerProcessorDTO.getId().equals(playerId))
       .findFirst()
-      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Player with ID %s not found", playerId)));
+      .get();
 
-    final TeamEvent teamEvent = teamEventRepository.findByTeamIdAndEventType(createdPlayerEvent.getTeamId(), TeamEvent.TeamEventType.TEAM_CREATE);
-
-    PlayerFullDTO playerFullDTO = PlayerFullDTO.builder()
+    return PlayerFullDTO.builder()
       .id(playerId)
-      .teamId(teamEvent.getTeamId())
-      .ownerId(teamEvent.getOwnerId())
-      .firstName(createdPlayerEvent.getFirstName())
-      .lastName(createdPlayerEvent.getLastName())
-      .country(createdPlayerEvent.getCountry())
-      .age(createdPlayerEvent.getAge())
-      .type(createdPlayerEvent.getType())
-      .marketValue(createdPlayerEvent.getMarketValue())
+      .teamId(playerProcessed.getTeamId())
+      .firstName(playerProcessed.getFirstName())
+      .lastName(playerProcessed.getLastName())
+      .country(playerProcessed.getCountry())
+      .age(playerProcessed.getAge())
+      .type(playerProcessed.getType())
+      .marketValue(playerProcessed.getMarketValue())
       .build();
+  }
 
-    final List<PlayerEvent> updatedPlayerEvents = playerEvents
+  public List<PlayerFullDTO> fetchByPlayerIds(final List<String> playerIds) {
+
+    log.info("Calling PlayerFullAggregate.fetchByPlayerIds for player IDs {}", playerIds);
+
+    final List<PlayerEvent> playerEvents = playerEventRepository.findByPlayerIdIn(playerIds);
+    return playerProcessor.process(playerEvents)
       .stream()
-      .filter(playerEvent -> PlayerEvent.PlayerEventType.PLAYER_UPDATE.equals(playerEvent.getEventType()))
-      .collect(Collectors.toList());
-
-    for (PlayerEvent update : updatedPlayerEvents) {
-      if (PlayerEvent.PlayerEventSubtype.PLAYER_UPDATE_INFO.equals(update.getEventSubtype())) {
-        playerFullDTO.setFirstName(update.getFirstName());
-        playerFullDTO.setLastName(update.getLastName());
-        playerFullDTO.setCountry(update.getCountry());
-      } else if (PlayerEvent.PlayerEventSubtype.PLAYER_TRANSFER.equals(update.getEventSubtype())) {
-        playerFullDTO.setTeamId(update.getTeamId());
-        playerFullDTO.setMarketValue(update.getMarketValue());
-      }
-    }
-
-    return playerFullDTO;
+      .map(playerProcessorDTO -> PlayerFullDTO.builder()
+        .id(playerProcessorDTO.getId())
+        .teamId(playerProcessorDTO.getTeamId())
+        .firstName(playerProcessorDTO.getFirstName())
+        .lastName(playerProcessorDTO.getLastName())
+        .country(playerProcessorDTO.getCountry())
+        .age(playerProcessorDTO.getAge())
+        .type(playerProcessorDTO.getType())
+        .marketValue(playerProcessorDTO.getMarketValue())
+        .build()
+      ).collect(Collectors.toList());
   }
 
 }
