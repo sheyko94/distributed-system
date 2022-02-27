@@ -1,8 +1,10 @@
 package com.toptal.playersservice.resources.controllers;
 
+import com.toptal.playersservice.aggregates.TeamFullAggregate;
 import com.toptal.playersservice.aggregates.TeamWithPlayersAggregate;
 import com.toptal.playersservice.aggregates.dtos.TeamWithPlayersDTO;
 import com.toptal.playersservice.resources.dtos.TeamDTO;
+import com.toptal.playersservice.resources.dtos.TeamFullDTO;
 import com.toptal.playersservice.resources.dtos.TeamUpdateDTO;
 import com.toptal.playersservice.services.TeamService;
 import com.toptal.playersservice.shared.SecurityUtils;
@@ -25,6 +27,7 @@ public class TeamController {
   private final TeamWithPlayersAggregate teamAndPlayersAggregate;
   private final SecurityUtils securityUtils;
   private final TeamService teamService;
+  private final TeamFullAggregate teamFullAggregate;
 
   @GetMapping
   public ResponseEntity<List<TeamWithPlayersDTO>> fetchTeamWithPlayersByLoggedUser() {
@@ -34,6 +37,11 @@ public class TeamController {
   @PutMapping("{id}")
   public ResponseEntity<TeamDTO> updateTeam(@PathVariable("id") final String id, @RequestBody final TeamUpdateDTO teamUpdateDTO) {
     return ResponseEntity.ok(teamService.update(id, teamUpdateDTO));
+  }
+
+  @GetMapping("{id}")
+  public ResponseEntity<TeamFullDTO> fetch(@PathVariable("id") final String id) {
+    return ResponseEntity.ok(teamFullAggregate.fetchTeamFullInformation(id));
   }
 
 }

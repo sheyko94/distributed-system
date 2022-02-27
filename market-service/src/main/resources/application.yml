@@ -1,27 +1,21 @@
 server:
-  port: 8082
+  port: 8083
   servlet:
     context-path: /
 
 spring:
 
   application:
-    name: players-service
+    name: market-service
     profiles:
       active: 'local'
 
   data:
     mongodb:
-      uri: mongodb://test123:test123@localhost:27018/players-service-db
+      uri: mongodb://test123:test123@localhost:27019/market-service-db
 
-aws:
-  sqs:
-    accessKeyId: 123
-    secretAccessKey: 123
-    host: http://localhost:4566
-    region: eu-west-1
-    queues:
-      user-signed-up-queue-url: http://localhost:4566/000000000000/UserSignedUpQueueURL
+hosts:
+  players-service: 'http://localhost:8082'
 
 security:
   oauth2:

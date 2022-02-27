@@ -75,9 +75,41 @@ services:
     working_dir: /players-service
     command: mvn compile spring-boot:run -DskipTests=true
 
+  # Market Service DB
+  market-service-db:
+    image: bitnami/mongodb:5.0.3
+    ports:
+      - 27019:27019
+    container_name: market-service-db
+    env_file:
+      - ../config/market.env
+    volumes:
+      - mongodb-market-service-data:/data/db
+    environment:
+      - MONGODB_PORT_NUMBER=27019
+      - MONGODB_USERNAME=test123
+      - MONGODB_PASSWORD=test123
+      - MONGODB_DATABASE=market-service-db
+
+  # Market Service
+  market-service:
+    image: maven:3.6.3-openjdk-11
+    ports:
+      - 8083:8083
+    container_name: market-service
+    env_file:
+      - ../config/common.env
+      - ../config/market.env
+    volumes:
+      - ${M2_PATH}:/root/.m2
+      - ../../market-service:/market-service
+    working_dir: /market-service
+    command: mvn compile spring-boot:run -DskipTests=true
+
 # Volumes
 volumes:
   db-data:
   localstackdata:
   mongodb-players-service-data:
+  mongodb-market-service-data:
 

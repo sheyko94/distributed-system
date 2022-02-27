@@ -56,6 +56,52 @@
 					"response": []
 				},
 				{
+					"name": "Sign Up Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"id2\", pm.response.json().id);",
+									"pm.environment.set(\"username2\", pm.response.json().username);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"ivangonzalezcabral2@toptal.com\",\n    \"password\": \"test123\",\n    \"passwordVerification\": \"test123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth_service_host}}/v1/sign-up",
+							"host": [
+								"{{auth_service_host}}"
+							],
+							"path": [
+								"v1",
+								"sign-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Log In",
 					"event": [
 						{
@@ -122,6 +168,74 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Log In Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"access_token2\", pm.response.json().access_token);",
+									"pm.environment.set(\"refresh_token2\", pm.response.json().refresh_token);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "test123",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "{{username2}}",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "toptal-client-id",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "toptal-client-secret",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{auth_service_host}}/oauth/token",
+							"host": [
+								"{{auth_service_host}}"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -129,7 +243,23 @@
 			"name": "teams",
 			"item": [
 				{
-					"name": "Get Team information",
+					"name": "Get Teams",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"team_id\", pm.response.json()[0].team.id);",
+									"pm.environment.set(\"player_id\", pm.response.json()[0].players[0].id);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -141,6 +271,142 @@
 							"path": [
 								"v1",
 								"team"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Teams Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"team_id2\", pm.response.json()[0].team.id);",
+									"pm.environment.set(\"player_id2\", pm.response.json()[0].players[0].id);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token2}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{players_service_host}}/v1/team",
+							"host": [
+								"{{players_service_host}}"
+							],
+							"path": [
+								"v1",
+								"team"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Team",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{players_service_host}}/v1/team/{{team_id}}",
+							"host": [
+								"{{players_service_host}}"
+							],
+							"path": [
+								"v1",
+								"team",
+								"{{team_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Team Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{players_service_host}}/v1/team/{{team_id2}}",
+							"host": [
+								"{{players_service_host}}"
+							],
+							"path": [
+								"v1",
+								"team",
+								"{{team_id2}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Team",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated name\",\n    \"country\": \"United States\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{players_service_host}}/v1/team/{{team_id}}",
+							"host": [
+								"{{players_service_host}}"
+							],
+							"path": [
+								"v1",
+								"team",
+								"{{team_id}}"
 							]
 						}
 					},
@@ -175,6 +441,210 @@
 							""
 						]
 					}
+				}
+			]
+		},
+		{
+			"name": "players",
+			"item": [
+				{
+					"name": "Update Player",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Updated first name\",\n    \"lastName\": \"Updated last name\",\n    \"country\": \"Spain\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{players_service_host}}/v1/player/{{player_id}}",
+							"host": [
+								"{{players_service_host}}"
+							],
+							"path": [
+								"v1",
+								"player",
+								"{{player_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Player",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{players_service_host}}/v1/player/{{player_id}}",
+							"host": [
+								"{{players_service_host}}"
+							],
+							"path": [
+								"v1",
+								"player",
+								"{{player_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Player Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{players_service_host}}/v1/player/{{player_id2}}",
+							"host": [
+								"{{players_service_host}}"
+							],
+							"path": [
+								"v1",
+								"player",
+								"{{player_id2}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "market",
+			"item": [
+				{
+					"name": "Get Market",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{market_service_host}}/v1/market",
+							"host": [
+								"{{market_service_host}}"
+							],
+							"path": [
+								"v1",
+								"market"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sell Player",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"value\": 1500000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{market_service_host}}/v1/market/player/{{player_id}}/sell",
+							"host": [
+								"{{market_service_host}}"
+							],
+							"path": [
+								"v1",
+								"market",
+								"player",
+								"{{player_id}}",
+								"sell"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buy Player",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token2}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"teamId\": \"{{team_id2}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{market_service_host}}/v1/market/player/{{player_id}}/buy",
+							"host": [
+								"{{market_service_host}}"
+							],
+							"path": [
+								"v1",
+								"market",
+								"player",
+								"{{player_id}}",
+								"buy"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

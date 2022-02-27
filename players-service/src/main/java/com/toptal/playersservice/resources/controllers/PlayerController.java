@@ -1,6 +1,8 @@
 package com.toptal.playersservice.resources.controllers;
 
+import com.toptal.playersservice.aggregates.PlayerFullAggregate;
 import com.toptal.playersservice.resources.dtos.PlayerDTO;
+import com.toptal.playersservice.resources.dtos.PlayerFullDTO;
 import com.toptal.playersservice.resources.dtos.PlayerUpdateDTO;
 import com.toptal.playersservice.services.PlayerService;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +20,16 @@ public class PlayerController {
   public final static String PLAYER_CONTROLLER_PREFIX = "/v1/player";
 
   private final PlayerService playerService;
+  private final PlayerFullAggregate playerFullAggregate;
 
   @PutMapping("{id}")
-  public ResponseEntity<PlayerDTO> updatePlayer(@PathVariable("id") final String id, @RequestBody final PlayerUpdateDTO playerUpdateDTO) {
+  public ResponseEntity<PlayerDTO> update(@PathVariable("id") final String id, @RequestBody final PlayerUpdateDTO playerUpdateDTO) {
     return ResponseEntity.ok(playerService.update(id, playerUpdateDTO));
+  }
+
+  @GetMapping("{id}")
+  public ResponseEntity<PlayerFullDTO> fetch(@PathVariable("id") final String id) {
+    return ResponseEntity.ok(playerFullAggregate.fetchPlayerFullInformation(id));
   }
 
 }

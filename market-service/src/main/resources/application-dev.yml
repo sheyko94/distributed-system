@@ -1,0 +1,20 @@
+server:
+  port: ${SERVER_PORT}
+
+spring:
+
+  application:
+    profiles:
+      active: 'dev'
+
+  data:
+    mongodb:
+      uri: mongodb://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+
+hosts:
+  players-service: ${PLAYERS_SERVICE_HOST}
+
+security:
+  oauth2:
+    public-key: ${TOPTAL_PUBLIC_KEY}
+    private-key: ${TOPTAL_PRIVATE_KEY}

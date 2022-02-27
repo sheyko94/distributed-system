@@ -17,4 +17,6 @@ public interface TeamEventRepository extends MongoRepository<TeamEvent, String> 
 
   List<TeamEvent> findByTeamIdInAndEventType(List<String> ids, TeamEvent.TeamEventType eventType);
 
+  List<TeamEvent> findByTeamId(String id);
+
 }

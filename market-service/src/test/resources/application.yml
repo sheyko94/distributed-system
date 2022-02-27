@@ -1,0 +1,12 @@
+spring:
+
+  application:
+    profiles:
+      active: 'test'
+
+  data:
+    mongodb:
+      uri: mongodb://test123:test123@localhost:27019/market-service-db
+
+hosts:
+  players-service: 'http://localhost:8082'

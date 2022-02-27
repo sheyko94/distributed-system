@@ -15,4 +15,6 @@ public interface PlayerEventRepository extends MongoRepository<PlayerEvent, Stri
 
   List<PlayerEvent> findByPlayerIdInAndEventType(List<String> playerIds, PlayerEvent.PlayerEventType eventType);
 
+  List<PlayerEvent> findByPlayerId(String playerId);
+
 }
