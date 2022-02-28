@@ -8,7 +8,9 @@ import com.toptal.playersservice.resources.dtos.TeamFullDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +32,7 @@ public class TeamFullAggregate {
       .stream()
       .filter(teamProcessorDTO -> teamProcessorDTO.getId().equals(teamId))
       .findFirst()
-      .get();
+      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Team with ID %s not found", teamId)));
 
     return TeamFullDTO.builder()
       .id(teamId)
