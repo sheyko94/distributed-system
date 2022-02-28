@@ -1,0 +1,35 @@
+server:
+  port: 8084
+  servlet:
+    context-path: /
+
+spring:
+
+  application:
+    name: gateway-service
+    profiles:
+      active: 'local'
+
+hosts:
+  auth-service: 'http://localhost:8081'
+  players-service: 'http://localhost:8082'
+  market-service: 'http://localhost:8083'
+
+zuul:
+  sensitive-headers:
+  routes:
+    auth-service:
+      path: /auth-service/**
+      url: ${hosts.auth-service}/auth-service
+    players-service:
+      path: /players-service/**
+      url: ${hosts.players-service}/players-service
+    market-service:
+      path: /market-service/**
+      url: ${hosts.market-service}/market-service
+
+security:
+  oauth2:
+    resource:
+      jwt:
+        key-uri: ${hosts.auth-service}/oauth/token_key

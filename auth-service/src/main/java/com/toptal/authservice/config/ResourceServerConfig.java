@@ -12,18 +12,18 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-    public static final String OPEN_ENDPOINTS_MATCHER = "**";
+  public static final String OPEN_ENDPOINTS_MATCHER = "/**";
 
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
-        http
-          .csrf()
-          .disable()
-          .anonymous()
-          .and()
-          .authorizeRequests().antMatchers(OPEN_ENDPOINTS_MATCHER).permitAll()
-          .and()
-          .sessionManagement()
-          .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    }
+  @Override
+  public void configure(HttpSecurity http) throws Exception {
+    http
+      .csrf()
+      .disable()
+      .anonymous()
+      .and()
+      .authorizeRequests().antMatchers(OPEN_ENDPOINTS_MATCHER).permitAll()
+      .and()
+      .sessionManagement()
+      .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+  }
 }

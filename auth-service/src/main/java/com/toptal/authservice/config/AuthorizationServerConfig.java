@@ -100,7 +100,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
   @Override
   public void configure(AuthorizationServerSecurityConfigurer oauthServer) {
-    oauthServer.allowFormAuthenticationForClients();
+    oauthServer
+      .tokenKeyAccess("permitAll()")
+      .checkTokenAccess("permitAll()")
+      .allowFormAuthenticationForClients();
   }
 
   @Bean

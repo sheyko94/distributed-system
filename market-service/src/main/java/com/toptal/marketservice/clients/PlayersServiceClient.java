@@ -19,14 +19,14 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class PlayersServiceClient {
 
-  @Value("${hosts.players-service}")
-  private String playersServiceHost;
+  @Value("${hosts.players-service.url}")
+  private String playersServiceUrl;
 
   private final OAuth2RestTemplate oAuth2RestTemplate;
 
   public PlayerFullDTO fetchPlayerFullInformation(final String playerId) {
 
-    final String url = String.format("%s/v1/player/%s", playersServiceHost, playerId);
+    final String url = String.format("%s/players-service/v1/player/%s", playersServiceUrl, playerId);
 
     log.info("Fetching PlayerFullDTO from url {}", url);
 
@@ -35,7 +35,7 @@ public class PlayersServiceClient {
 
   public PlayersWithTeamGroupDTO fetchPlayersWithTeam(final List<String> playerIds) throws JsonProcessingException {
 
-    final String url = String.format("%s/v1/player/extended-players", playersServiceHost);
+    final String url = String.format("%s/players-service/v1/player/extended-players", playersServiceUrl);
 
     log.info("Fetching PlayerWithTeamGroupDTO from url {}", url);
 
@@ -44,7 +44,7 @@ public class PlayersServiceClient {
 
   public TeamFullDTO fetchTeamFullInformation(final String teamId) {
 
-    final String url = String.format("%s/v1/team/%s", playersServiceHost, teamId);
+    final String url = String.format("%s/players-service/v1/team/%s", playersServiceUrl, teamId);
 
     log.info("Fetching TeamFullDTO from url {}", url);
 

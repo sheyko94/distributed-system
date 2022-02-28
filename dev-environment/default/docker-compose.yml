@@ -106,6 +106,21 @@ services:
     working_dir: /market-service
     command: mvn compile spring-boot:run -DskipTests=true
 
+  # Gateway Service
+  gateway-service:
+    image: maven:3.6.3-openjdk-11
+    ports:
+      - 8084:8084
+    container_name: gateway-service
+    env_file:
+      - ../config/common.env
+      - ../config/gateway.env
+    volumes:
+      - ${M2_PATH}:/root/.m2
+      - ../../gateway-service:/gateway-service
+    working_dir: /gateway-service
+    command: mvn compile spring-boot:run -DskipTests=true
+
 # Volumes
 volumes:
   db-data:

@@ -11,6 +11,9 @@ spring:
     mongodb:
       uri: mongodb://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
 
+hosts:
+  auth-service: 'http://${AUTH_SERVICE_HOST}'
+
 aws:
   sqs:
     accessKeyId: ${AWS_SQS_ACCESS_KEY_ID}
@@ -23,5 +26,5 @@ aws:
 
 security:
   oauth2:
-    public-key: ${TOPTAL_PUBLIC_KEY}
-    private-key: ${TOPTAL_PRIVATE_KEY}
+    client-id: ${TOPTAL_CLIENT_ID}
+    client-secret: ${TOPTAL_CLIENT_SECRET}
