@@ -26,3 +26,8 @@ aws:
     queues:
       user-signed-up-queue-url: http://localhost:4566/000000000000/UserSignedUpQueueURL
       player-bought-queue-url: http://localhost:4566/000000000000/PlayerBoughtQueueURL.fifo
+
+security:
+  oauth2:
+    client-id: toptal-client-id
+    client-secret: toptal-client-secret

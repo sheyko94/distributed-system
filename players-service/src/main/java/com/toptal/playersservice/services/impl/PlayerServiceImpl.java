@@ -40,10 +40,12 @@ public class PlayerServiceImpl implements PlayerService {
   @Override
   public PlayerFullDTO update(String playerId, PlayerUpdateDTO playerUpdateDTO) {
 
-    final PlayerEvent createdPlayerEvent = Optional.ofNullable(playerEventRepository.findByPlayerIdAndEventType(playerId, PlayerEvent.PlayerEventType.PLAYER_CREATE))
-      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Player with ID %s not found", playerId)));
-
     final String loggedUserId = securityUtils.getLoggedUserID();
+
+    log.info("User with ID {} is updating the player with ID {}", loggedUserId, playerId);
+
+    final PlayerFullDTO currentPlayer = Optional.ofNullable(playerFullAggregate.fetchByPlayerId(playerId))
+      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Player with ID %s not found", playerId)));
 
     List<String> teamsIdsForTheLoggedUser = teamEventRepository.findByOwnerId(loggedUserId)
       .stream()
@@ -51,7 +53,8 @@ public class PlayerServiceImpl implements PlayerService {
       .distinct()
       .collect(Collectors.toList());
 
-    if (!teamsIdsForTheLoggedUser.contains(createdPlayerEvent.getTeamId())) {
+    if (!teamsIdsForTheLoggedUser.contains(currentPlayer.getTeamId())) {
+      log.info("Forbidden user trying to update a player. User ID {} with teams IDs {}", loggedUserId, teamsIdsForTheLoggedUser);
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, String.format("User with ID %s can not update the Player with ID %s", loggedUserId, playerId));
     }
 

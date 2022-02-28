@@ -29,12 +29,12 @@ public class TeamServiceImpl implements TeamService {
   @Override
   public TeamFullDTO update(String teamId, TeamUpdateDTO teamUpdateDTO) {
 
-    final TeamEvent createdTeamEvent = Optional.ofNullable(teamEventRepository.findByTeamIdAndEventType(teamId, TeamEvent.TeamEventType.TEAM_CREATE))
+    final TeamFullDTO currentTeam = Optional.ofNullable(teamFullAggregate.fetchByTeamId(teamId))
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Team with ID %s not found", teamId)));
 
     final String loggedUserId = securityUtils.getLoggedUserID();
 
-    if (!createdTeamEvent.getOwnerId().equals(loggedUserId)) {
+    if (!currentTeam.getOwnerId().equals(loggedUserId)) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, String.format("User with ID %s can not update the Team with ID %s", loggedUserId, teamId));
     }
 

@@ -27,6 +27,7 @@ public class PlayerController {
 
   @PutMapping("{id}")
   public ResponseEntity<PlayerFullDTO> update(@PathVariable("id") final String id, @RequestBody final PlayerUpdateDTO playerUpdateDTO) {
+    log.info("Calling PlayerController.update for ID {}", id);
     return ResponseEntity.ok(playerService.update(id, playerUpdateDTO));
   }
 

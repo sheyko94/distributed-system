@@ -2,7 +2,6 @@ package com.toptal.playersservice.aggregates;
 
 import com.toptal.playersservice.aggregates.processors.PlayerProcessor;
 import com.toptal.playersservice.aggregates.processors.dtos.PlayerProcessorDTO;
-import com.toptal.playersservice.domain.events.PlayerEvent;
 import com.toptal.playersservice.domain.repositories.PlayerEventRepository;
 import com.toptal.playersservice.resources.dtos.PlayerFullDTO;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +24,7 @@ public class PlayerFullAggregate {
 
     log.info("Calling PlayerFullAggregate.fetchByPlayerId for player ID {}", playerId);
 
-    final List<PlayerEvent> playerEvents = playerEventRepository.findByPlayerId(playerId);
-    final PlayerProcessorDTO playerProcessed = playerProcessor.process(playerEvents)
+    final PlayerProcessorDTO playerProcessed = playerProcessor.process(playerEventRepository.findByPlayerId(playerId))
       .stream()
       .filter(playerProcessorDTO -> playerProcessorDTO.getId().equals(playerId))
       .findFirst()
@@ -48,8 +46,7 @@ public class PlayerFullAggregate {
 
     log.info("Calling PlayerFullAggregate.fetchByPlayerIds for player IDs {}", playerIds);
 
-    final List<PlayerEvent> playerEvents = playerEventRepository.findByPlayerIdIn(playerIds);
-    return playerProcessor.process(playerEvents)
+    return playerProcessor.process(playerEventRepository.findByPlayerIdIn(playerIds))
       .stream()
       .map(playerProcessorDTO -> PlayerFullDTO.builder()
         .id(playerProcessorDTO.getId())
