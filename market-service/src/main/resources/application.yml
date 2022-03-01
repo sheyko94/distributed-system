@@ -15,8 +15,12 @@ spring:
       uri: mongodb://test123:test123@localhost:27019/market-service-db
 
 hosts:
-  auth-service: 'http:localhost:8081'
-  players-service: 'http://localhost:8082'
+  auth-service:
+    host: localhost:8081
+    url: 'http://${hosts.auth-service.host}'
+  players-service:
+    host: localhost:8082
+    url: 'http://${hosts.players-service.host}'
 
 aws:
   sqs:

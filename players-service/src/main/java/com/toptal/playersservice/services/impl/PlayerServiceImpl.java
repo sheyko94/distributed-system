@@ -9,6 +9,7 @@ import com.toptal.playersservice.resources.dtos.PlayerFullDTO;
 import com.toptal.playersservice.resources.dtos.PlayerUpdateDTO;
 import com.toptal.playersservice.services.PlayerService;
 import com.toptal.playersservice.shared.SecurityUtils;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -32,13 +33,13 @@ public class PlayerServiceImpl implements PlayerService {
   private final PlayerFullAggregate playerFullAggregate;
 
   @Override
-  public List<PlayerEvent> batchGenerate(String teamId, int noPlayers) {
+  public List<PlayerEvent> batchGenerate(@NonNull final String teamId, final int noPlayers) {
     List<PlayerEvent> playersToCreate = generatePlayersToCreate(teamId, noPlayers);
     return playerEventRepository.saveAll(playersToCreate);
   }
 
   @Override
-  public PlayerFullDTO update(String playerId, PlayerUpdateDTO playerUpdateDTO) {
+  public PlayerFullDTO update(@NonNull final String playerId, @NonNull final PlayerUpdateDTO playerUpdateDTO) {
 
     final String loggedUserId = securityUtils.getLoggedUserID();
 
@@ -77,7 +78,7 @@ public class PlayerServiceImpl implements PlayerService {
     return playerFullAggregate.fetchByPlayerId(playerId);
   }
 
-  private List<PlayerEvent> generatePlayersToCreate(String teamId, int noPlayers) {
+  private List<PlayerEvent> generatePlayersToCreate(@NonNull final String teamId, @NonNull final int noPlayers) {
 
     List<PlayerEvent> playersToCreate = new ArrayList<>();
     int index = 1;

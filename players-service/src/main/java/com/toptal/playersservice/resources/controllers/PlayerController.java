@@ -7,6 +7,7 @@ import com.toptal.playersservice.resources.dtos.PlayerUpdateDTO;
 import com.toptal.playersservice.resources.dtos.PlayersWithTeamGroupDTO;
 import com.toptal.playersservice.resources.dtos.StringsWrapperDTO;
 import com.toptal.playersservice.services.PlayerService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class PlayerController {
   private final PlayersWithTeamAggregate playersWithTeamAggregate;
 
   @PutMapping("{id}")
-  public ResponseEntity<PlayerFullDTO> update(@PathVariable("id") final String id, @RequestBody final PlayerUpdateDTO playerUpdateDTO) {
+  public ResponseEntity<PlayerFullDTO> update(@PathVariable("id") final String id, @RequestBody @NonNull final PlayerUpdateDTO playerUpdateDTO) {
     log.info("Calling PlayerController.update for ID {}", id);
     return ResponseEntity.ok(playerService.update(id, playerUpdateDTO));
   }
@@ -37,7 +38,7 @@ public class PlayerController {
   }
 
   @PostMapping("extended-players")
-  public ResponseEntity<PlayersWithTeamGroupDTO> fetch(@RequestBody final StringsWrapperDTO stringsWrapperDTO) {
+  public ResponseEntity<PlayersWithTeamGroupDTO> fetch(@RequestBody @NonNull final StringsWrapperDTO stringsWrapperDTO) {
     return ResponseEntity.ok(PlayersWithTeamGroupDTO.builder()
       .players(playersWithTeamAggregate.fetchByPlayerIds(stringsWrapperDTO.getIds()))
       .build());

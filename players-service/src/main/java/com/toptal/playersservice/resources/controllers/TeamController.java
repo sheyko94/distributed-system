@@ -7,6 +7,7 @@ import com.toptal.playersservice.resources.dtos.TeamFullDTO;
 import com.toptal.playersservice.resources.dtos.TeamUpdateDTO;
 import com.toptal.playersservice.services.TeamService;
 import com.toptal.playersservice.shared.SecurityUtils;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class TeamController {
   }
 
   @PutMapping("{id}")
-  public ResponseEntity<TeamFullDTO> updateTeam(@PathVariable("id") final String id, @RequestBody final TeamUpdateDTO teamUpdateDTO) {
+  public ResponseEntity<TeamFullDTO> updateTeam(@PathVariable("id") final String id, @RequestBody @NonNull final TeamUpdateDTO teamUpdateDTO) {
     return ResponseEntity.ok(teamService.update(id, teamUpdateDTO));
   }
 

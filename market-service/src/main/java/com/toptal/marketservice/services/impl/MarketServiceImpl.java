@@ -12,6 +12,7 @@ import com.toptal.marketservice.resources.dtos.MarketBuyPlayerDTO;
 import com.toptal.marketservice.resources.dtos.MarketSellPlayerDTO;
 import com.toptal.marketservice.services.MarketService;
 import com.toptal.marketservice.shared.SecurityUtils;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class MarketServiceImpl implements MarketService {
   private final PlayerBoughtSQSProducer playerBoughtSQSProducer;
 
   @Override
-  public void sellPlayer(final String playerId, final MarketSellPlayerDTO marketSellPlayerDTO) {
+  public void sellPlayer(@NonNull final String playerId, @NonNull final MarketSellPlayerDTO marketSellPlayerDTO) {
 
     final PlayerFullDTO playerFullDTO = playersServiceClient.fetchPlayerFullInformation(playerId);
     final TeamFullDTO buyingTeamFullDTO = playersServiceClient.fetchTeamFullInformation(playerFullDTO.getTeamId());
@@ -62,7 +63,7 @@ public class MarketServiceImpl implements MarketService {
   }
 
   @Override
-  public void buyPlayer(final String playerId, final MarketBuyPlayerDTO marketBuyPlayerDTO) throws JsonProcessingException {
+  public void buyPlayer(@NonNull final String playerId, @NonNull final MarketBuyPlayerDTO marketBuyPlayerDTO) throws JsonProcessingException {
 
     final List<MarketEvent> events = marketEventRepository.findByPlayerIdAndEventTypeIn(playerId, Arrays.asList(
       MarketEvent.MarketEventType.PLAYER_SALE, MarketEvent.MarketEventType.PLAYER_BOUGHT));
@@ -112,7 +113,7 @@ public class MarketServiceImpl implements MarketService {
   }
 
   @Override
-  public MarketEvent getSellingEventOrNull(final List<MarketEvent> events) {
+  public MarketEvent getSellingEventOrNull(@NonNull final List<MarketEvent> events) {
 
     final List<MarketEvent> marketEventsForThePlayer = events
       .stream()

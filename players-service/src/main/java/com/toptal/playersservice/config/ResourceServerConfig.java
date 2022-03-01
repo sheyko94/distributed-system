@@ -20,8 +20,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
   public static final String OPEN_ENDPOINTS_MATCHER = "**";
 
-  @Value("${hosts.auth-service}")
-  private String authServiceHost;
+  @Value("${hosts.auth-service.url}")
+  private String authServiceUrl;
 
   @Value("${security.oauth2.client-id}")
   private String clientId;
@@ -47,7 +47,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
   @Bean
   public RemoteTokenServices tokenService() {
     RemoteTokenServices tokenService = new RemoteTokenServices();
-    final String checkTokenEndpointUrl = String.format("%s/auth-service/oauth/check_token", authServiceHost);
+    final String checkTokenEndpointUrl = String.format("%s/auth-service/oauth/check_token", authServiceUrl);
     log.info("Set CheckTokenEndpointUrl as {}", checkTokenEndpointUrl);
     tokenService.setCheckTokenEndpointUrl(checkTokenEndpointUrl);
     tokenService.setClientId(clientId);

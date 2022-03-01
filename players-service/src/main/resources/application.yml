@@ -15,7 +15,8 @@ spring:
       uri: mongodb://test123:test123@localhost:27018/players-service-db
 
 hosts:
-  auth-service: 'http:localhost:8081'
+  auth-service:
+    url: 'http:localhost:8081'
 
 aws:
   sqs:

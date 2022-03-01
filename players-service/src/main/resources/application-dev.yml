@@ -12,7 +12,8 @@ spring:
       uri: mongodb://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
 
 hosts:
-  auth-service: 'http://${AUTH_SERVICE_HOST}'
+  auth-service:
+    url: 'http://${AUTH_SERVICE_HOST}'
 
 aws:
   sqs:

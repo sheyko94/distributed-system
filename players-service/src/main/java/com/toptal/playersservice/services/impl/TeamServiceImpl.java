@@ -7,6 +7,7 @@ import com.toptal.playersservice.resources.dtos.TeamFullDTO;
 import com.toptal.playersservice.resources.dtos.TeamUpdateDTO;
 import com.toptal.playersservice.services.TeamService;
 import com.toptal.playersservice.shared.SecurityUtils;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class TeamServiceImpl implements TeamService {
   private final TeamFullAggregate teamFullAggregate;
 
   @Override
-  public TeamFullDTO update(String teamId, TeamUpdateDTO teamUpdateDTO) {
+  public TeamFullDTO update(@NonNull final String teamId, @NonNull final TeamUpdateDTO teamUpdateDTO) {
 
     final TeamFullDTO currentTeam = Optional.ofNullable(teamFullAggregate.fetchByTeamId(teamId))
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Team with ID %s not found", teamId)));

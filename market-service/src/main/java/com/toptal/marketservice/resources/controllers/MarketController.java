@@ -6,6 +6,7 @@ import com.toptal.marketservice.aggregates.MarketPlayerSellingDTO;
 import com.toptal.marketservice.resources.dtos.MarketBuyPlayerDTO;
 import com.toptal.marketservice.resources.dtos.MarketSellPlayerDTO;
 import com.toptal.marketservice.services.MarketService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +32,13 @@ public class MarketController {
   }
 
   @PostMapping("player/{id}/sell")
-  public ResponseEntity<Void> sellPlayer(@PathVariable("id") final String id, @RequestBody final MarketSellPlayerDTO marketSellPlayerDTO) {
+  public ResponseEntity<Void> sellPlayer(@PathVariable("id") final String id, @RequestBody @NonNull final MarketSellPlayerDTO marketSellPlayerDTO) {
     marketService.sellPlayer(id, marketSellPlayerDTO);
     return ResponseEntity.ok().build();
   }
 
   @PostMapping("player/{id}/buy")
-  public ResponseEntity<Void> buyPlayer(@PathVariable("id") final String id, @RequestBody final MarketBuyPlayerDTO marketBuyPlayerDTO) throws JsonProcessingException {
+  public ResponseEntity<Void> buyPlayer(@PathVariable("id") final String id, @RequestBody @NonNull final MarketBuyPlayerDTO marketBuyPlayerDTO) throws JsonProcessingException {
     marketService.buyPlayer(id, marketBuyPlayerDTO);
     return ResponseEntity.ok().build();
   }

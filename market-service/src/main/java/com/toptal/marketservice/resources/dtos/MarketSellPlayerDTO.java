@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class MarketSellPlayerDTO {
 
+  @NonNull
   private BigDecimal value;
 
 }

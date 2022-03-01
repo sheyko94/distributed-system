@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class MarketBuyPlayerDTO {
 
+  @NonNull
   private String teamId;
 
 }
