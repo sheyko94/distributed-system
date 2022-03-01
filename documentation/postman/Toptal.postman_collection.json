@@ -1112,7 +1112,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{access_token2}}",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]
@@ -1121,7 +1121,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"teamId\": \"{{team_id2}}\"\n}",
+							"raw": "{\n    \"teamId\": \"{{team_id}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
