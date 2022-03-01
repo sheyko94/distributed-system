@@ -32,4 +32,4 @@ security:
   oauth2:
     resource:
       jwt:
-        key-uri: ${hosts.auth-service}/oauth/token_key
+        key-uri: ${hosts.auth-service}/auth-service/oauth/token_key

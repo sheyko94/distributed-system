@@ -1016,35 +1016,6 @@
 					"response": []
 				},
 				{
-					"name": "GET Market",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{access_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{gateway_service_host}}/market-service/v1/market",
-							"host": [
-								"{{gateway_service_host}}"
-							],
-							"path": [
-								"market-service",
-								"v1",
-								"market"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Update Player",
 					"request": {
 						"method": "PUT",
@@ -1068,6 +1039,35 @@
 								"v1",
 								"player",
 								"{{player_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Market",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{gateway_service_host}}/market-service/v1/market",
+							"host": [
+								"{{gateway_service_host}}"
+							],
+							"path": [
+								"market-service",
+								"v1",
+								"market"
 							]
 						}
 					},

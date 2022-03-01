@@ -24,7 +24,7 @@ spring:
     hikari:
       connectionTimeout: 20000
       maximumPoolSize: 5
-    url: jdbc:postgresql://localhost:5432/auth-server-db
+    url: jdbc:postgresql://localhost:5432/auth-service-db
     username: test123
     password: test123
 
