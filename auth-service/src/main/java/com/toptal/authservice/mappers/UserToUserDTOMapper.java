@@ -1,7 +1,6 @@
 package com.toptal.authservice.mappers;
 
 import com.toptal.authservice.domain.models.User;
-import com.toptal.authservice.mappers.converters.TimestampToLocalDateTimeConverter;
 import com.toptal.authservice.resources.dtos.UserDTO;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -13,9 +12,6 @@ import java.util.Objects;
 
 @Component
 public class UserToUserDTOMapper {
-
-  @Autowired
-  private TimestampToLocalDateTimeConverter timestampToLocalDateTimeConverter;
 
   @Autowired
   private ModelMapper modelMapper;
