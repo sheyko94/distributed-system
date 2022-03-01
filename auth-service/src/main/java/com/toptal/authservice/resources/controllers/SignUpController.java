@@ -6,6 +6,7 @@ import com.toptal.authservice.mappers.UserToUserDTOMapper;
 import com.toptal.authservice.resources.dtos.SignUpDTO;
 import com.toptal.authservice.resources.dtos.UserDTO;
 import com.toptal.authservice.services.UserService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
 import java.io.UnsupportedEncodingException;
 
@@ -30,7 +32,7 @@ public class SignUpController {
   private final UserToUserDTOMapper userToUserDTOMapper;
 
   @PostMapping
-  public ResponseEntity<UserDTO> signUp(@RequestBody SignUpDTO signUpDTO) throws ValidationException, UnsupportedEncodingException, JsonProcessingException {
+  public ResponseEntity<UserDTO> signUp(@RequestBody @Valid @NonNull SignUpDTO signUpDTO) throws ValidationException, UnsupportedEncodingException, JsonProcessingException {
     User newUser = userService.signUp(signUpDTO);
     return ResponseEntity.ok(userToUserDTOMapper.map(newUser));
   }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -35,7 +36,7 @@ public class TeamController {
   }
 
   @PutMapping("{id}")
-  public ResponseEntity<TeamFullDTO> updateTeam(@PathVariable("id") final String id, @RequestBody @NonNull final TeamUpdateDTO teamUpdateDTO) {
+  public ResponseEntity<TeamFullDTO> updateTeam(@PathVariable("id") final String id, @RequestBody @Valid @NonNull final TeamUpdateDTO teamUpdateDTO) {
     return ResponseEntity.ok(teamService.update(id, teamUpdateDTO));
   }
 

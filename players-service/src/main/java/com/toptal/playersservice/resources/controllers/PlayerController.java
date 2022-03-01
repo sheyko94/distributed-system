@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
 @RequestMapping(PlayerController.PLAYER_CONTROLLER_PREFIX)
@@ -27,7 +29,7 @@ public class PlayerController {
   private final PlayersWithTeamAggregate playersWithTeamAggregate;
 
   @PutMapping("{id}")
-  public ResponseEntity<PlayerFullDTO> update(@PathVariable("id") final String id, @RequestBody @NonNull final PlayerUpdateDTO playerUpdateDTO) {
+  public ResponseEntity<PlayerFullDTO> update(@PathVariable("id") final String id, @RequestBody @Valid @NonNull final PlayerUpdateDTO playerUpdateDTO) {
     log.info("Calling PlayerController.update for ID {}", id);
     return ResponseEntity.ok(playerService.update(id, playerUpdateDTO));
   }
@@ -38,7 +40,7 @@ public class PlayerController {
   }
 
   @PostMapping("extended")
-  public ResponseEntity<PlayersWithTeamGroupDTO> fetch(@RequestBody @NonNull final StringsWrapperDTO stringsWrapperDTO) {
+  public ResponseEntity<PlayersWithTeamGroupDTO> fetch(@RequestBody @NonNull @Valid final StringsWrapperDTO stringsWrapperDTO) {
     return ResponseEntity.ok(PlayersWithTeamGroupDTO.builder()
       .players(playersWithTeamAggregate.fetchByPlayerIds(stringsWrapperDTO.getIds()))
       .build());

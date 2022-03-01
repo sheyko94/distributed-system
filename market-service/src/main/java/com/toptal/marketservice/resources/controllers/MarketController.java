@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -32,13 +33,13 @@ public class MarketController {
   }
 
   @PostMapping("player/{id}/sell")
-  public ResponseEntity<Void> sellPlayer(@PathVariable("id") final String id, @RequestBody @NonNull final MarketSellPlayerDTO marketSellPlayerDTO) {
+  public ResponseEntity<Void> sellPlayer(@PathVariable("id") final String id, @RequestBody @Valid @NonNull final MarketSellPlayerDTO marketSellPlayerDTO) {
     marketService.sellPlayer(id, marketSellPlayerDTO);
     return ResponseEntity.ok().build();
   }
 
   @PostMapping("player/{id}/buy")
-  public ResponseEntity<Void> buyPlayer(@PathVariable("id") final String id, @RequestBody @NonNull final MarketBuyPlayerDTO marketBuyPlayerDTO) throws JsonProcessingException {
+  public ResponseEntity<Void> buyPlayer(@PathVariable("id") final String id, @RequestBody @Valid @NonNull final MarketBuyPlayerDTO marketBuyPlayerDTO) throws JsonProcessingException {
     marketService.buyPlayer(id, marketBuyPlayerDTO);
     return ResponseEntity.ok().build();
   }
