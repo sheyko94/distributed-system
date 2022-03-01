@@ -1,0 +1,97 @@
+
+@startuml General User flow
+
+header General User flow
+
+actor "user"
+participant "gateway-service" as GatewayService
+participant "auth-service" as AuthService
+database "auth-service-db" as AuthServiceDB
+participant "players-service" as PlayersService
+database "players-service-db" as PlayersServiceDB
+participant "market-service" as MarketService
+database "market-service-db" as MarketServiceDB
+queue "SQS" as SQS
+
+==Authentication==
+activate "user" #42c740
+activate "GatewayService" #4db9f7
+"user" -> "GatewayService": SignUp
+activate "AuthService" #f1fa50
+"GatewayService" -> "AuthService": SignUp
+activate "AuthServiceDB" #c2c1c0
+"AuthService" -> "AuthServiceDB": Stores User
+"AuthServiceDB" --> "AuthService": Returns User
+activate "SQS" #006400
+"AuthService" -> "SQS": Fires UserSignedUpQueueURL
+"AuthService" --> "GatewayService": User information
+"GatewayService" --> "user": User information
+"user" -> "GatewayService": LogIn
+"GatewayService" -> "AuthService": LogIn
+"AuthService" -> "AuthServiceDB": Find User
+"AuthServiceDB" --> "AuthService": Returns User
+deactivate "AuthServiceDB"
+"AuthService" --> "GatewayService": JWT token
+deactivate "AuthService"
+"GatewayService" --> "user": JWT token
+
+==Player and Team==
+activate "PlayersService" #b2b2ff
+"SQS" --> "PlayersService": Listens UserSignedUpQueueURL
+activate "PlayersServiceDB" #c2c1c0
+"PlayersService" -> "PlayersServiceDB": Create Team and Players
+"SQS" --> "PlayersService": Listens PlayerBoughtQueueURL.fifo
+"PlayersService" -> "PlayersServiceDB": Update Teams budgets and Player market value
+"user" -> "GatewayService": Get Teams
+"GatewayService" -> "PlayersService": Get Teams
+"PlayersService" -> "PlayersServiceDB": Get Team and Players
+"PlayersServiceDB" --> "PlayersService": Return Team and Players
+"PlayersService" --> "GatewayService": Return Team and Players
+"GatewayService" --> "user": Return Team and Players
+"user" -> "GatewayService": Update Team
+"GatewayService" -> "PlayersService": Update Team
+"PlayersService" -> "PlayersServiceDB": Update Team
+"PlayersServiceDB" --> "PlayersService": Return Team
+"PlayersService" --> "GatewayService": Return Team
+"GatewayService" --> "user": Return Team
+"user" -> "GatewayService": Update Player
+"GatewayService" -> "PlayersService": Update Player
+"PlayersService" -> "PlayersServiceDB": Update Player
+"PlayersServiceDB" --> "PlayersService": Return Player
+deactivate "PlayersServiceDB"
+"PlayersService" --> "GatewayService": Return Player
+"GatewayService" --> "user": Return Player
+
+==Market==
+"user" -> "GatewayService": Get Market
+activate "MarketService" #ff3355
+"GatewayService" -> "MarketService": Get Market
+activate "MarketServiceDB" #c2c1c0
+"MarketService" -> "MarketServiceDB": Get Market
+"MarketServiceDB" --> "MarketService": Return Market
+"MarketService" -> "PlayersService": Fetch Team and Players Information
+"PlayersService" --> "MarketService": Return Team and Players Information
+deactivate "PlayersService"
+"MarketService" --> "GatewayService": Return Enhanced Market
+"GatewayService" --> "user": Return Enhanced Market
+"user" -> "GatewayService": Sell Player
+"GatewayService" -> "MarketService": Sell Player
+"MarketService" -> "MarketServiceDB": Sell Player
+"MarketServiceDB" --> "MarketService": Return Player
+"MarketService" --> "GatewayService": HTTP 200
+"GatewayService" --> "user": HTTP 200
+"user" -> "GatewayService": Buy Player
+"GatewayService" -> "MarketService": Buy Player
+"MarketService" -> "MarketServiceDB": Buy Player
+"MarketServiceDB" --> "MarketService": Return Player
+deactivate "MarketServiceDB"
+"MarketService" -> "SQS": Fires PlayerBoughtQueueURL.fifo
+deactivate "SQS"
+"MarketService" --> "GatewayService": HTTP 200
+deactivate "MarketService"
+"GatewayService" --> "user": HTTP 200
+deactivate "GatewayService"
+deactivate "user"
+
+@enduml
+ 

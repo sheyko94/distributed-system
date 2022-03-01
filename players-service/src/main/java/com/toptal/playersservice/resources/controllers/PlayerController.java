@@ -37,7 +37,7 @@ public class PlayerController {
     return ResponseEntity.ok(playerFullAggregate.fetchByPlayerId(id));
   }
 
-  @PostMapping("extended-players")
+  @PostMapping("extended")
   public ResponseEntity<PlayersWithTeamGroupDTO> fetch(@RequestBody @NonNull final StringsWrapperDTO stringsWrapperDTO) {
     return ResponseEntity.ok(PlayersWithTeamGroupDTO.builder()
       .players(playersWithTeamAggregate.fetchByPlayerIds(stringsWrapperDTO.getIds()))

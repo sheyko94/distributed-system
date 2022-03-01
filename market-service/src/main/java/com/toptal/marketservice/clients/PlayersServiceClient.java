@@ -35,7 +35,7 @@ public class PlayersServiceClient {
 
   public PlayersWithTeamGroupDTO fetchPlayersWithTeam(final List<String> playerIds) throws JsonProcessingException {
 
-    final String url = String.format("%s/players-service/v1/player/extended-players", playersServiceUrl);
+    final String url = String.format("%s/players-service/v1/player/extended", playersServiceUrl);
 
     log.info("Fetching PlayerWithTeamGroupDTO from url {}", url);
 
